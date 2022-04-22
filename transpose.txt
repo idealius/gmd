@@ -1,0 +1,7 @@
+skip first 7 lines
+
+Columns:
+12(also total # of col) = process name
+10 = memory
+9 = CPU
+
