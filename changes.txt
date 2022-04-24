@@ -1,0 +1,15 @@
+
+::2:
+
+now handles failed file saves better. 
+now defaults to home directory if user supplied directory write fails, and if that fails it is also tracked. status now shown at end of std output.
+now labels processes with total number of processes when totaling e.g. (chrome:(16)).
+function added: rounding decimals to a given precision.
+memory now tracked with column 6 of top so in MB instead of %.
+ferreted out bug with gmdcache (top output file) being unable to be read, or showing null. for future reference it was the shell.exec command I did prior to any other fs operations
+many, many more changes
+"2nd commit, now handles failed file opens/saves better.  now defaults to home directory if user supplied directory write fails, and if that fails it is also tracked. status now shown at end of std output. now labels processes with total number of processes when totaling e.g. (chrome:(16)). function added: rounding decimals to a given precision. memory now tracked with column 6 of top so in MB instead of %. ferreted out bug with gmdcache (top output file) being unable to be read, or showing null. for future reference it was the shell.exec command I did prior to any other fs operations many more change"
+
+
+
+

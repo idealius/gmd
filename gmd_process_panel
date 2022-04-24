@@ -54,21 +54,21 @@ color2 FFA300
 color3 grey
 
 TEXT
-${execi 1 node "~/.conky/Grouped Memory Display/gmd.js"}
 ${color2}CPU ${color0}${alignr}${cpu cpu0}%
 ${cpubar cpu0 5,}
-${awk 'NR == 1 {print $1}' /var/tmp/topcpu)}
-${top name 1} $alignr ${top cpu 1}%
-${top name 2} $alignr ${top cpu 2}%
-${top name 3} $alignr ${top cpu 3}%
-${top name 4} $alignr ${top cpu 4}%
-${top name 5} $alignr ${top cpu 5}%
+${execi 5 cat topcpu | awk 'NR==1{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==1{print $2}'}%
+${execi 5 cat topcpu | awk 'NR==2{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==2{print $2}'}%
+${execi 5 cat topcpu | awk 'NR==3{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==3{print $2}'}%
+${execi 5 cat topcpu | awk 'NR==4{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==4{print $2}'}%
+${execi 5 cat topcpu | awk 'NR==5{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==5{print $2}'}%
+
 
 ${color2}RAM ${color0}${alignr}${mem}
 ${membar 5,}
-${top_mem name 1} $alignr ${top_mem mem_res 1}
-${top_mem name 2} $alignr ${top_mem mem_res 2}
-${top_mem name 3} $alignr ${top_mem mem_res 3}
-${top_mem name 4} $alignr ${top_mem mem_res 4}
-${top_mem name 5} $alignr ${top_mem mem_res 5}
+${execi 5 cat topcpu | awk 'NR==1{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==1{print $2}'} MB
+${execi 5 cat topcpu | awk 'NR==2{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==2{print $2}'} MB
+${execi 5 cat topcpu | awk 'NR==3{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==3{print $2}'} MB
+${execi 5 cat topcpu | awk 'NR==4{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==4{print $2}'} MB
+${execi 5 cat topcpu | awk 'NR==5{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==5{print $2}'} MB
+
 
