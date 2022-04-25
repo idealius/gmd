@@ -11,25 +11,32 @@ Make easy to read output files containing totals for current CPU and MEM usage o
 
 
 
-/* Usage
+/* Usage //x needs update
 
 gmd folder
 //export topmem and topcpu to destination folder
 
 gmd
-//print to std out thru console.log
+//print to std out thru inform
 
 gmd -1
-//both, saved to /var/tmp/topmem and topcpu
+//both, saved to ./topmem and topcpu
 
 */
 
 'use strict'
 const { strictEqual } = require('assert')
 const { isNullOrUndefined } = require('util')
-//var shell = require('child_process')
-var myfile = require('fs')
 const { exit } = require('process')
+
+var DEBUG = false //not your compiler's debug
+
+var INFORM_VERBOSE = true //Really shouldn't change this. console logging enabled, then alias 'inform' below
+var error_log = ""
+var inform_log = ""
+
+var shell = require('child_process')
+var myfile = require('fs')
 var mode = 1
 var destdir = "File unsaved for: "
 var top_data
@@ -40,10 +47,46 @@ var output_success = true
 
 //This a file piped from top we parse as our only initial data set
 var gmd_cache_path = "gmdcache"
+var file_retries = 100
 
-//x console.log(myargs)
+const myargs = process.argv.slice(2) //remove file location columns 'node', './'
 
-const myargs = process.argv.slice(2) //remove file location columns
+
+var my_write_file = function(filename, data, retries) {
+    var i = 0
+    while (i < retries) {
+        myfile.writeFileSync(filename, data)
+        if (!myfile.existsSync(filename)) i++
+        else return true
+    }
+}
+
+var my_read_file = function(filename, retries) {
+    var err_track = "" //I'm not sure (err) below is accessible at this level of scope hence this var
+    while (i < retries) {
+        try {
+            // vv   -o %MEM is more for preference and changes little except for a bit of 'pre-sort' by memory usage
+            // var data = myfile.readFileSync(filename, {encoding:'utf8'})
+            var data = myfile.readFileSync(filename, {encoding:'utf8'})
+            return data
+        } catch(err) {
+            err_track = err
+            add_error("Error accessing \'" + filename + "\', error code:" + err)
+            i++
+            continue
+        }
+    }
+    return err_track
+}
+
+var brisk_exit = function(err) {
+    // myfile.writeFileSync("gmd_err.log", error_log)
+    my_write_file("gmd_err.log", error_log, file_retries)
+    if (!INFORM_VERBOSE || DEBUG) my_write_file("gmd.log", inform_log, file_retries)
+    process.exit(err)
+}
+
+
 switch (myargs[0]) {
     case undefined:
     case "":
@@ -51,33 +94,99 @@ switch (myargs[0]) {
         console.log("Print mode")
         break
     case "-1":
-        mode = -1 //both
-        destdir = "/var/tmp/"
+        mode = -1 //both print and save, but tied down to ./gmdcache for output
+        destdir = "./"
         console.log("Print and Save mode")
         break
-    default:
-        mode = 3 //x 1 for release 2 for debug | save files /w user provided dir
+    case "3": //debug
+        mode = 3
+        DEBUG = true
         destdir = myargs[0]
         if (destdir[destdir.length-1] != '/') destdir += '/'
-        console.log("File output mode")
+        console.log("User supplied file output mode")
+        break
+    default: //intended usage, and silent
+        INFORM_VERBOSE = false
+        mode = 1
+        destdir = myargs[0]
+        if (destdir[destdir.length-1] != '/') destdir += '/'
+        //console.log("User supplied file output mode")
         break
 }
-console.log(1)
-//shell.exec("top -o %MEM -b -n 1 > " + gmd_cache_path) 
+
+
+// 3 types of console.log duplicates:
+// add_error() = building disk log
+// inform() = user facing logging
+// debug() = dev facing
+
+// ERROR
+var add_error = function(err) {
+    error_log += err + '\n'
+    return err
+}
+
+// INFORM
 try {
-    // vv   -o %MEM is more for preference and changes little except for a bit of 'pre-sort' by memory usage
-    top_data = myfile.readFileSync(gmd_cache_path, {encoding:'utf8'})
-} catch(err) {
-    console.log("Error accessing " + gmd_cache_path +',', "error code:")
-    process.exit(err)
+    var inform = function(str){
+        if (INFORM_VERBOSE) console.log(str)
+
+        if (str[str.length-1] !="\n") str += "\n"
+        inform_log += str
+    }
+}catch (err){
+    console.log(add_error("Logging unavailable, Error: " + err));
+
 }
-console.log(2)
-if (top_data === undefined || top_data === null || top_data == "") {
-    console.log ("Can't read gmdcache from \'" + gmd_cache_path + "\'")
-    process.exit(-1)
+// DEBUG
+try {
+    if (DEBUG) {
+            var debug = console.log.bind(global.console) // debug is going to mimic the bind to global.console
+    } 
+    else var debug = function(){} //... or go to limbo
+}catch (err){
+    console.log(add_error("\'Debugging mode\' unavailable, Error: " + err));
 }
-// console.log(top_data) //x
-console.log(3)
+
+debug(1)
+var columns1 = "COLUMNS_CACHE=$COLUMNS & COLUMNS=100 &"
+//var top_cmd = "watch -n 1 top -o %MEM -b -n 1 >" + gmd_cache_path
+var top_cmd = "top -o %MEM -b -n 1 > " + gmd_cache_path
+var columns2 = " & COLUMNS=$COLUMNS_CACHE"
+// shell.exec( columns1 + top_cmd + columns2)
+// shell.exec(top_cmd)
+var gmd_retries = -1
+var err_track = "Error with gmdcache, error couldn't be tracked."
+
+while (gmd_retries < file_retries+1) {
+    gmd_retries++
+    try {
+        // vv   -o %MEM is more for preference and changes little except for a bit of 'pre-sort' by memory usage
+        top_data = myfile.readFileSync(gmd_cache_path, {encoding:'utf8'})
+        break
+    } catch(err) {
+        err_track = err
+        add_error("Error accessing \'" + gmd_cache_path + "\', error code:" + err)
+        continue
+    }
+    
+}
+if (top_data === undefined || top_data === null || top_data == "" || top_data.length < 50) {
+    add_error("\'null\' gmdcache from \'" + gmd_cache_path + "\'")
+    
+}
+debug(2)
+
+if (gmd_retries >= file_retries) {
+    console.log("Exceeded max gmdcache access retries: " + gmd_retries + " at " + gmd_cache_path)
+    add_error("Exceeded max gmdcache access retries: " + gmd_retries + " at " + gmd_cache_path)
+    brisk_exit(err_track)
+}
+
+inform("gmdcache access retries: " + gmd_retries)
+
+debug(top_data) //x
+debug(3)
 
 var cache_data = top_data.split("\n")
 cache_data = cache_data.splice(7)
@@ -92,10 +201,10 @@ for (var i = 0; i < cache_data.length; i++) {
     var cache_string = cache_data[i].slice(cache_data[i].lastIndexOf(" ")+1)
 
     my_name_data.push(cache_string) //dont need second arg for slice apparently 
-    //x console.log(my_data[i])
+    //x debug(my_data[i])
 }
 
-console.log(4)
+debug(4)
 //Functions:
 
 // 6561 ilius  20   0 1108.7g 369140 259080 S   0.0   9.2   0:13.05 chrome
@@ -115,12 +224,12 @@ var extract_column = function(col, source_array) {
         
         //Cap it at the end of the loop...
         if (x == col-1) b = source_array.indexOf(' ', a+2)
-        //x console.log(a, b)
+        //x debug(a, b)
         a++
     }
     var ret = source_array.slice(a, b)
     ret = (ret === null || ret === undefined || isNaN(ret)) ? 0 : ret //x debug
-    console.log(ret)
+    debug(ret)
     return ret
 }
 
@@ -159,7 +268,7 @@ var contains = function(search_str, array_str) {
 
 
 var decimal_round = function(num, prec) {
-    //console.log(num)
+    //debug(num)
     if (num == parseInt(num)) return num //not even a decimal
     var num_str = num.toString()
     var dec = 0
@@ -203,7 +312,7 @@ var decimal_round = function(num, prec) {
 var marked_for_deletion = [] //kind of a hacky way to do this part later but w/e
 
 //Main data consolidation loop with details inline:
-console.log(5)
+debug(5)
 for (var i = 0; i < cache_data.length; i++) {
     
     var ret = extract_column(6, cache_data[i]) //Memory data
@@ -233,18 +342,18 @@ for (var i = 0; i < cache_data.length; i++) {
     if (dupe.result) { //"Duplicate" so add up totals...
         
         //BUG Why is this data checking necessary? (starts, here actually we just do it later) v v v BUG
-        // my_mem_data[value] = (my_mem_data[value] === null || my_mem_data[value] === undefined || isNaN(my_mem_data[value])) ? 0 : my_mem_data[value] 
-        // my_cpu_data[value] = (my_cpu_data[value] === null || my_cpu_data[value] === undefined || isNaN(my_cpu_data[value])) ? 0 : my_cpu_data[value] 
+        my_mem_data[value] = (my_mem_data[value] === null || my_mem_data[value] === undefined || isNaN(my_mem_data[value])) ? 0 : my_mem_data[value] 
+        my_cpu_data[value] = (my_cpu_data[value] === null || my_cpu_data[value] === undefined || isNaN(my_cpu_data[value])) ? 0 : my_cpu_data[value] 
         
-        // console.log(':' + value, my_name_data[value], my_mem_data[value], my_cpu_data[value]) //x debug
-        //x if (value >= my_mem_data.length) console.log("WTF?") //x debug lol
+        // debug(':' + value, my_name_data[value], my_mem_data[value], my_cpu_data[value]) //x debug
+        //x if (value >= my_mem_data.length) debug("WTF?") //x debug lol
         var my_float = my_mem_data[value] + extract_mem
         my_mem_data[value] = decimal_round(my_float, 2)
-        //x console.log(my_float)
+        //x debug(my_float)
 
         my_float = my_cpu_data[value] + extract_cpu
         my_cpu_data[value] = decimal_round(my_float, 2)
-        console.log('{' + value, my_name_data[value], my_mem_data[value], my_cpu_data[value]) //x debug
+        debug('{' + value, my_name_data[value], my_mem_data[value], my_cpu_data[value]) //x debug
         marked_for_deletion.push(true)
         
         //update the process name in the form of a trailing '(x)' where x is the number of duplicate processes
@@ -271,7 +380,7 @@ for (var i = 0; i < cache_data.length; i++) {
             var my_int = parseInt(name.slice(open_brk_pos+1, close_brk_pos))
             my_int++
             my_name_data[value] = name.slice(0, open_brk_pos+1) + my_int.toString() + name.slice(close_brk_pos)
-            //x console.log(name) //x
+            //x debug(name) //x
         }
         else {
             my_name_data[value] += ":(2)"
@@ -288,8 +397,8 @@ for (var i = 0; i < cache_data.length; i++) {
     }
 }
 
-console.log(my_name_data,my_mem_data)
-console.log(6)
+debug(my_name_data,my_mem_data)
+debug(6)
 
 //Delete marked in the name array and build our 2 lists
 var cache_my_name_data = []
@@ -307,17 +416,17 @@ my_cpu_data = my_cpu_data.slice(0,name_len)
 
 
 my_name_data = cache_my_name_data
-//x console.log("LENGTHS:", my_name_data.length, my_mem_data.length)
+//x debug("LENGTHS:", my_name_data.length, my_mem_data.length)
 
 for (var i = 0; i < my_name_data.length; i++) {
-    // console.log(':' + my_name_data[i], my_mem_data[i], my_cpu_data[i]) //x debug
+    // debug(':' + my_name_data[i], my_mem_data[i], my_cpu_data[i]) //x debug
      //x Why is this necessary? v v v
     my_mem_data[i] = (my_mem_data[i] === null || my_mem_data[i] === undefined || isNaN(my_mem_data[i])) ? 0 : my_mem_data[i] 
     my_cpu_data[i] = (my_cpu_data[i] === null || my_cpu_data[i] === undefined || isNaN(my_cpu_data[i])) ? 0 : my_cpu_data[i] 
      
     my_proc_mem_array.push([my_name_data[i], my_mem_data[i]])
     my_proc_cpu_array.push([my_name_data[i], my_cpu_data[i]])
-    // console.log('.' + my_name_data[i], my_mem_data[i], my_cpu_data[i]) //x debug
+    // debug('.' + my_name_data[i], my_mem_data[i], my_cpu_data[i]) //x debug
 }
 
 // SECTION ------------------------------------------------
@@ -336,7 +445,7 @@ function arraymove(arr, fromIndex, toIndex) {
     var replacement = nestedCopy(arr)
     replacement[fromIndex] = toIndex_cache
     replacement[toIndex] = fromIndex_cache
-    //x console.log("Successfully moved row..")
+    //x debug("Successfully moved row..")
     return replacement
 }
 
@@ -344,16 +453,16 @@ function arraymove(arr, fromIndex, toIndex) {
 //Over complicated because of my current ignorance on JS array scope management
 //Basically, we're looking for a bigger number than us, and if it is we swap places as
 //we iterate down - /w restarting the loop, resuming an inner loop, and array cloning when necessary
-console.log(8)
+debug(8)
 var my_sort = function (data_array) {
-    //x console.log(data_array.length)
+    //x debug(data_array.length)
     var start_over
     var done = false
     var passes = 0
     var shifts = 0
     var cache_array
     var i_start_pos = 0
-    console.log(9)
+    debug(9)
     while(!done) {
         start_over = false
         passes++
@@ -366,7 +475,7 @@ var my_sort = function (data_array) {
                     var gc_array = cache_array
                     cache_array = arraymove(data_array, i, c)
                     // gc_array = null //Might help garbage collection (gc)
-                    console.log("Move from row:", i + " to " + c)
+                    debug("Move from row:", i + " to " + c)
                     start_over = true //without knowing details this is necessary since we're looping and modifying an array at the same time
                     shifts++
                     break
@@ -381,12 +490,12 @@ var my_sort = function (data_array) {
             else
             {                                               //3. if we made it this far we know we're the biggest number for that position
                 i_start_pos = i
-                console.log("Sorted index:", i)
+                debug("Sorted index:", i)
             }
         }
-        // console.log(data_array)
+        // debug(data_array)
     }
-    console.log("Passes:", passes, "Shifts:", shifts)
+    debug("Passes:", passes, "Shifts:", shifts)
     
     return cache_array
 }
@@ -395,7 +504,7 @@ var my_sort = function (data_array) {
 
 //my_proc_cpu_array.sort()
 // my_proc_mem_array.sort(sortFunction);
-//x console.log(my_proc_cpu_array)
+//x debug(my_proc_cpu_array)
 var gc_mem = my_proc_mem_array
 var gc_cpu = my_proc_cpu_array
 my_proc_mem_array = my_sort(my_proc_mem_array)
@@ -406,7 +515,7 @@ my_proc_cpu_array = my_sort(my_proc_cpu_array)
 //Convert to one big string with '\n's instead of ','s (at least when they're written)
 var giant_cpu_string = ""
 var giant_mem_string = ""
-console.log(my_name_data.length + '\n', my_proc_cpu_array, my_proc_mem_array)
+debug(my_name_data.length + '\n', my_proc_cpu_array, my_proc_mem_array)
 
 for (var i = 0; i < my_name_data.length; i++) {
         giant_cpu_string += my_proc_cpu_array[i][0] + ' ' + my_proc_cpu_array[i][1] + '\n'
@@ -414,59 +523,69 @@ for (var i = 0; i < my_name_data.length; i++) {
 }
 
 
-//xconsole.log(giant_mem_string)
+//xdebug(giant_mem_string)
 
 //Save file
 if (mode != 0) {
     try {
         try {
-            myfile.writeFileSync(destdir + "topcpu", giant_cpu_string)
-            myfile.writeFileSync(destdir + "topmem", giant_mem_string)
+            // myfile.writeFileSync(destdir + "topcpu", giant_cpu_string)
+            my_write_file(destdir + "topcpu", giant_cpu_string, file_retries)
+
+            // myfile.writeFileSync(destdir + "topmem", giant_mem_string)
+            my_write_file(destdir + "topmem", giant_mem_string, file_retries)
         } catch {
             output_success = "(saved in home only)"
             console.log("Failed: Saving to", destdir + "\nTrying local directory and home.")
-            myfile.writeFileSync("~/topcpu", giant_cpu_string) //try to save in local dir
-            myfile.writeFileSync("~/topmem", giant_mem_string)
-            myfile.writeFileSync("topcpu", giant_cpu_string) //try to save in local dir
-            myfile.writeFileSync("topmem", giant_mem_string)
+            // myfile.writeFileSync("~/topcpu", giant_cpu_string) //try to save in local dir
+            // myfile.writeFileSync("~/topmem", giant_mem_string)
+            // myfile.writeFileSync("topcpu", giant_cpu_string) //try to save in local dir
+            // myfile.writeFileSync("topmem", giant_mem_string)
+
+            my_write_file("~/topcpu", giant_cpu_string, file_retries)
+            my_write_file("~/topmem", giant_mem_string, file_retries)
+            my_write_file("topcpu", giant_cpu_string, file_retries)
+            my_write_file("topmem", giant_mem_string, file_retries)
+
             destdir = "(Backup) ~/"
         }
     } catch (err) {
         output_success = false
         console.log("Could not output file(s) at all...") //x fill out later when I figure it out lol
-        process.exit(err)
+        brisk_exit(err)
     }
         // myfile.writeFileSync(destdir + "topmem", my_proc_mem_array);
 }
 
 //Print output
 if (mode != 1) {
-    //console.log(my_proc_mem_array, my_proc_cpu_array)
-    console.log(giant_mem_string)
-    console.log(giant_cpu_string)
+    //debug(my_proc_mem_array, my_proc_cpu_array)
+    inform(giant_mem_string)
+    inform(giant_cpu_string)
 
 }
 
-// console.log(my_name_data, my_cpu_data ,my_mem_data)
+// debug(my_name_data, my_cpu_data ,my_mem_data)
 
 
 
 
 function verbose() {
-    console.log("\n")
-    console.log("mode: Print=0 Both(/var/tmp)=-1 Debug=3")
-    console.log("current setting:", mode,"\n")
-    if (!output_success) console.log("Destination Directory:", destdir)
+    inform("\n")
+    inform("mode: " + mode)
+    inform("  0=Print\n -1=Both(output to /var/tmp)\n  2=User specified output\n  3=Zero and Two(Debug)")
+    // inform("current setting:", mode,"\n")
+    if (!output_success) inform("Destination Directory: " + destdir)
     if (mode != 0) {
-        console.log(destdir + "topmem & cpumem", "\n")
-        console.log("File output success? : ")
-        console.log("\x1b[32m%s\x1b[0m", output_success.toString())
+        inform(destdir + "topmem & cpumem", "\n")
+        inform("File output success? : ")
+        inform("\x1b[32m" + output_success.toString()+"\x1b[0m ")
     }
-    else console.log ("Print complete")
+    else inform ("\nPrint complete")
 } verbose()
 
 
-console.log("\n"+"Done")
+brisk_exit()
 
 
 

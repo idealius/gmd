@@ -1,0 +1,9 @@
+*.swp
+*.log
+*notepad.lua
+*.bak
+simple.js
+test.sh
+topcpu
+topmem
+transpose.txt

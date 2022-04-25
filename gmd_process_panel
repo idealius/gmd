@@ -3,7 +3,7 @@
 #
 # Webpage: http://teejeetech.blogspot.in/
 # **********************************************************************
-
+# EDITED BY IDEALIUS on github
 
 background yes
 double_buffer yes
@@ -52,23 +52,27 @@ color0 white
 color1 EAEAEA
 color2 FFA300
 color3 grey
+test = "Hello World"
 
 TEXT
+
 ${color2}CPU ${color0}${alignr}${cpu cpu0}%
 ${cpubar cpu0 5,}
-${execi 5 cat topcpu | awk 'NR==1{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==1{print $2}'}%
-${execi 5 cat topcpu | awk 'NR==2{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==2{print $2}'}%
-${execi 5 cat topcpu | awk 'NR==3{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==3{print $2}'}%
-${execi 5 cat topcpu | awk 'NR==4{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==4{print $2}'}%
-${execi 5 cat topcpu | awk 'NR==5{print $1}'} $alignr ${execi 5 cat topcpu | awk 'NR==5{print $2}'}%
-
+${execi 1 cat ./topcpu | awk 'NR==1{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==1{print $2}'}%
+${execi 1 cat ./topcpu | awk 'NR==2{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==2{print $2}'}%
+${execi 1 cat ./topcpu | awk 'NR==3{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==3{print $2}'}%
+${execi 1 cat ./topcpu | awk 'NR==4{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==4{print $2}'}%
+${execi 1 cat ./topcpu | awk 'NR==5{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==5{print $2}'}%
 
 ${color2}RAM ${color0}${alignr}${mem}
 ${membar 5,}
-${execi 5 cat topcpu | awk 'NR==1{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==1{print $2}'} MB
-${execi 5 cat topcpu | awk 'NR==2{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==2{print $2}'} MB
-${execi 5 cat topcpu | awk 'NR==3{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==3{print $2}'} MB
-${execi 5 cat topcpu | awk 'NR==4{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==4{print $2}'} MB
-${execi 5 cat topcpu | awk 'NR==5{print $1}'} $alignr ${execi 5 cat topmem | awk 'NR==5{print $2}'} MB
+${execi 1 cat ./topmem | awk 'NR==1{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==1{print $2}'} MB
+${execi 1 cat ./topmem | awk 'NR==2{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==2{print $2}'} MB
+${execi 1 cat ./topmem | awk 'NR==3{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==3{print $2}'} MB
+${execi 1 cat ./topmem | awk 'NR==4{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==4{print $2}'} MB
+${execi 1 cat ./topmem | awk 'NR==5{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==5{print $2}'} MB
+${execi 1 top -o %MEM -b -n 1 > gmdcache && node ~/.conky/gmd/gmd.js ./}
+
+
 
 
