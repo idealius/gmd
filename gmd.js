@@ -29,11 +29,12 @@ const { strictEqual } = require('assert')
 const { isNullOrUndefined } = require('util')
 const { exit } = require('process')
 
-var DEBUG = false //not your compiler's debug
+var DEBUG_MODE = false //not your compiler's debug
 
 var INFORM_VERBOSE = true //Really shouldn't change this. console logging enabled, then alias 'inform' below
 var error_log = ""
 var inform_log = ""
+var debug_log = ""
 
 var shell = require('child_process')
 var myfile = require('fs')
@@ -65,8 +66,6 @@ var my_read_file = function(filename, retries) {
     var err_track = "" //I'm not sure (err) below is accessible at this level of scope hence this var
     while (i < retries) {
         try {
-            // vv   -o %MEM is more for preference and changes little except for a bit of 'pre-sort' by memory usage
-            // var data = myfile.readFileSync(filename, {encoding:'utf8'})
             var data = myfile.readFileSync(filename, {encoding:'utf8'})
             return data
         } catch(err) {
@@ -82,7 +81,8 @@ var my_read_file = function(filename, retries) {
 var brisk_exit = function(err) {
     // myfile.writeFileSync("gmd_err.log", error_log)
     my_write_file("gmd_err.log", error_log, file_retries)
-    if (!INFORM_VERBOSE || DEBUG) my_write_file("gmd.log", inform_log, file_retries)
+    if (!INFORM_VERBOSE || DEBUG_MODE) my_write_file("gmd.log", inform_log, file_retries)
+    if (DEBUG_MODE) my_write_file("gmd_debug.log", debug_log, file_retries) //x might want to make a DEBUG_OVERRIDE
     process.exit(err)
 }
 
@@ -100,8 +100,8 @@ switch (myargs[0]) {
         break
     case "3": //debug
         mode = 3
-        DEBUG = true
-        destdir = myargs[0]
+        DEBUG_MODE = true
+        destdir = "./"
         if (destdir[destdir.length-1] != '/') destdir += '/'
         console.log("User supplied file output mode")
         break
@@ -139,11 +139,17 @@ try {
 
 }
 // DEBUG
+// check if object is a string, Orwellophile (stackoverflow) 
+function isString(x) {
+    return Object.prototype.toString.call(x) === "[object String]"
+}
 try {
-    if (DEBUG) {
-            var debug = console.log.bind(global.console) // debug is going to mimic the bind to global.console
-    } 
-    else var debug = function(){} //... or go to limbo
+    var debug = function(str){
+        if (DEBUG_MODE) console.log(str)
+        str += ""
+        if (str[str.length-1] !="\n") str += "\n"
+        debug_log += str
+    }
 }catch (err){
     console.log(add_error("\'Debugging mode\' unavailable, Error: " + err));
 }
@@ -321,7 +327,6 @@ for (var i = 0; i < cache_data.length; i++) {
     ret = extract_column(9, cache_data[i]) //CPU data
     var extract_cpu = decimal_round(parseFloat(ret), 2)
 
-    var tmp_str_array = my_name_data.slice(0, i) // clip array to only search up to our current index
     
     //May as well clean up the bottom of the name list... //x Should refactor this to the readfile stage...
     if (my_name_data[i] == " " || my_name_data[i] == "") {
@@ -329,6 +334,7 @@ for (var i = 0; i < cache_data.length; i++) {
         continue
     }
     
+    var tmp_str_array = my_name_data.slice(0, i) // clip array to only search up to our current index
     var dupe = []
     dupe.push({result:false})
     if (i != 0) { // v We got a duplicate here?
@@ -342,8 +348,8 @@ for (var i = 0; i < cache_data.length; i++) {
     if (dupe.result) { //"Duplicate" so add up totals...
         
         //BUG Why is this data checking necessary? (starts, here actually we just do it later) v v v BUG
-        my_mem_data[value] = (my_mem_data[value] === null || my_mem_data[value] === undefined || isNaN(my_mem_data[value])) ? 0 : my_mem_data[value] 
-        my_cpu_data[value] = (my_cpu_data[value] === null || my_cpu_data[value] === undefined || isNaN(my_cpu_data[value])) ? 0 : my_cpu_data[value] 
+        // my_mem_data[value] = (my_mem_data[value] === null || my_mem_data[value] === undefined || isNaN(my_mem_data[value])) ? 0 : my_mem_data[value] 
+        // my_cpu_data[value] = (my_cpu_data[value] === null || my_cpu_data[value] === undefined || isNaN(my_cpu_data[value])) ? 0 : my_cpu_data[value] 
         
         // debug(':' + value, my_name_data[value], my_mem_data[value], my_cpu_data[value]) //x debug
         //x if (value >= my_mem_data.length) debug("WTF?") //x debug lol
@@ -397,7 +403,9 @@ for (var i = 0; i < cache_data.length; i++) {
     }
 }
 
-debug(my_name_data,my_mem_data)
+debug(my_name_data)
+debug(my_mem_data)
+debug(my_cpu_data)
 debug(6)
 
 //Delete marked in the name array and build our 2 lists
@@ -409,14 +417,14 @@ for (var i = 0; i < my_name_data.length; i++) {
 
 }
 
+my_name_data = cache_my_name_data
+//x debug("LENGTHS:", my_name_data.length, my_mem_data.length)
 //slice off the ends of our mem and cpu lists to match the name list
 var name_len = my_name_data.length
 my_mem_data = my_mem_data.slice(0,name_len)
 my_cpu_data = my_cpu_data.slice(0,name_len)
 
 
-my_name_data = cache_my_name_data
-//x debug("LENGTHS:", my_name_data.length, my_mem_data.length)
 
 for (var i = 0; i < my_name_data.length; i++) {
     // debug(':' + my_name_data[i], my_mem_data[i], my_cpu_data[i]) //x debug
@@ -439,7 +447,7 @@ function nestedCopy(array) {
 }
 
 //basically a brute force element swapping function that gets around modifying arrays out of scope by deep cloning it first
-function arraymove(arr, fromIndex, toIndex) {
+function array_swap_element(arr, fromIndex, toIndex) {
     var toIndex_cache = arr[toIndex]
     var fromIndex_cache = arr[fromIndex]
     var replacement = nestedCopy(arr)
@@ -460,22 +468,32 @@ var my_sort = function (data_array) {
     var done = false
     var passes = 0
     var shifts = 0
-    var cache_array
+    var cache_array = data_array
     var i_start_pos = 0
-    debug(9)
     while(!done) {
         start_over = false
         passes++
         for (var i=i_start_pos;i<data_array.length;i++) {
             for (var c=data_array.length-1;c>=0;c--) {
                 var oracle = 0
-                // oracle = (i - 1 > 0) ? data_array[i-1] : oracle
-                oracle = (c - 1 > 0) ? data_array[c-1][1] : oracle
-                if (c > i && data_array[c][1] > data_array[i][1] && oracle < data_array[c][1]) {
-                    var gc_array = cache_array
-                    cache_array = arraymove(data_array, i, c)
+                var next_seed = data_array[c][1]
+                if (c > i && next_seed > data_array[i][1]) {
+                    // var gc_array = cache_array //x used ostensibly for gc
+                    var mem_pos = c
+                    var mem_cont = next_seed
+                    //we found a suitable replacement, but let's just double check there isn't a bigger
+                    //value further down the list because our swap operation is mem expensive:
+                    while (c > i) { 
+                        c--
+                        var contender = data_array[c][1]
+                        if (contender > mem_cont) {
+                            mem_cont = contender
+                            mem_pos = c 
+                        }
+                    }
+                    cache_array = array_swap_element(data_array, i, mem_pos)
                     // gc_array = null //Might help garbage collection (gc)
-                    debug("Move from row:", i + " to " + c)
+                    debug("Switched " + i + " with " + mem_pos)
                     start_over = true //without knowing details this is necessary since we're looping and modifying an array at the same time
                     shifts++
                     break
@@ -489,33 +507,35 @@ var my_sort = function (data_array) {
             else if (i == data_array.length-1) done = true  //2. break the loop, we're done
             else
             {                                               //3. if we made it this far we know we're the biggest number for that position
-                i_start_pos = i
-                debug("Sorted index:", i)
+                i_start_pos = i+1
+                debug("Sorted index: " + i)
             }
         }
         // debug(data_array)
     }
-    debug("Passes:", passes, "Shifts:", shifts)
+    debug("Passes: " + (passes - shifts) + " Shifts / Restarts: " + shifts)
     
     return cache_array
 }
 
 //FUNCTION END
 
-//my_proc_cpu_array.sort()
-// my_proc_mem_array.sort(sortFunction);
 //x debug(my_proc_cpu_array)
 var gc_mem = my_proc_mem_array
 var gc_cpu = my_proc_cpu_array
+debug(8.5)
+debug(my_proc_cpu_array)
+debug(9)
 my_proc_mem_array = my_sort(my_proc_mem_array)
 my_proc_cpu_array = my_sort(my_proc_cpu_array)
+debug('CPU DATA' + my_cpu_data)
 // gc_mem = null //Might help garbage collection (GC)
 // gc_cpu = null
-
+debug('MY_PROC_CPU_ARRAY' + my_proc_cpu_array)
 //Convert to one big string with '\n's instead of ','s (at least when they're written)
 var giant_cpu_string = ""
 var giant_mem_string = ""
-debug(my_name_data.length + '\n', my_proc_cpu_array, my_proc_mem_array)
+// debug(my_name_data.length + '\n' + my_proc_cpu_array + '\n' + my_proc_mem_array)
 
 for (var i = 0; i < my_name_data.length; i++) {
         giant_cpu_string += my_proc_cpu_array[i][0] + ' ' + my_proc_cpu_array[i][1] + '\n'

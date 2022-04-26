@@ -8,7 +8,7 @@
 background yes
 double_buffer yes
 
-alignment bottom_right
+alignment top_right
 
 border_width 1
 cpu_avg_samples 2
@@ -21,7 +21,7 @@ draw_outline no
 draw_shades no
 
 gap_x 130
-gap_y 20
+gap_y 130
 net_avg_samples 2
 no_buffers yes
 out_to_console no
@@ -55,23 +55,24 @@ color3 grey
 test = "Hello World"
 
 TEXT
-
-${color2}CPU ${color0}${alignr}${cpu cpu0}%
-${cpubar cpu0 5,}
-${execi 1 cat ./topcpu | awk 'NR==1{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==1{print $2}'}%
-${execi 1 cat ./topcpu | awk 'NR==2{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==2{print $2}'}%
-${execi 1 cat ./topcpu | awk 'NR==3{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==3{print $2}'}%
-${execi 1 cat ./topcpu | awk 'NR==4{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==4{print $2}'}%
-${execi 1 cat ./topcpu | awk 'NR==5{print $1}'} $alignr ${execi 1 cat ./topcpu | awk 'NR==5{print $2}'}%
+${color2}CPU 1${color0}${alignr}${cpu cpu0}%
+${cpubar cpu0 3,}
+${color2}CPU 2${color0}${alignr}${cpu cpu1}%
+${cpubar cpu1 3,}
+${execi 3 cat ./topcpu | awk 'NR==1{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==1{print $2}'}%
+${execi 3 cat ./topcpu | awk 'NR==2{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==2{print $2}'}%
+${execi 3 cat ./topcpu | awk 'NR==3{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==3{print $2}'}%
+${execi 3 cat ./topcpu | awk 'NR==4{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==4{print $2}'}%
+${execi 3 cat ./topcpu | awk 'NR==5{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==5{print $2}'}%
 
 ${color2}RAM ${color0}${alignr}${mem}
 ${membar 5,}
-${execi 1 cat ./topmem | awk 'NR==1{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==1{print $2}'} MB
-${execi 1 cat ./topmem | awk 'NR==2{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==2{print $2}'} MB
-${execi 1 cat ./topmem | awk 'NR==3{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==3{print $2}'} MB
-${execi 1 cat ./topmem | awk 'NR==4{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==4{print $2}'} MB
-${execi 1 cat ./topmem | awk 'NR==5{print $1}'} $alignr ${execi 1 cat ./topmem | awk 'NR==5{print $2}'} MB
-${execi 1 top -o %MEM -b -n 1 > gmdcache && node ~/.conky/gmd/gmd.js ./}
+${execi 3 cat ./topmem | awk 'NR==1{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==1{print $2}'} MB
+${execi 3 cat ./topmem | awk 'NR==2{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==2{print $2}'} MB
+${execi 3 cat ./topmem | awk 'NR==3{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==3{print $2}'} MB
+${execi 3 cat ./topmem | awk 'NR==4{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==4{print $2}'} MB
+${execi 3 cat ./topmem | awk 'NR==5{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==5{print $2}'} MB
+${execi 3 top -b -n 1 > gmdcache && node ~/.conky/gmd/gmd.js ./}
 
 
 
