@@ -1,0 +1,10 @@
+.gmdcache access retries: 0
+
+mode: 1
+  0=Print
+ -1=Both(output to /var/tmp)
+  2=User specified output
+  3=Zero and Two(Debug)
+./.topmem & .cpumem
+File output success? : 
+[32mtrue[0m 

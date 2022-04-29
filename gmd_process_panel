@@ -1,18 +1,10 @@
-# **********************************************************************
-# "CPU Panel (8-core)" theme for Conky by Tony George (teejee2008@gmail.com)
-#
-# Webpage: http://teejeetech.blogspot.in/
-# **********************************************************************
-# EDITED BY IDEALIUS on github
-
-background yes
+background no 
 double_buffer yes
 
 alignment top_right
 
 border_width 1
-cpu_avg_samples 2
-default_color white
+default_color black
 default_outline_color white
 default_shade_color white
 draw_borders no
@@ -22,23 +14,22 @@ draw_shades no
 
 gap_x 130
 gap_y 130
-net_avg_samples 2
-no_buffers yes
 out_to_console no
 out_to_stderr no
 extra_newline no
 
 own_window yes
-own_window_type normal
+own_window_type desktop
 own_window_transparent yes
-own_window_colour 000000
+own_window_colour 2F2F2F
+own_window_class Conky
 own_window_argb_visual no
 own_window_argb_value 0
 own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 
 minimum_size 170 0
 stippled_borders 0
-update_interval 2.0
+update_interval 1.0
 uppercase no
 use_spacer none
 
@@ -52,28 +43,21 @@ color0 white
 color1 EAEAEA
 color2 FFA300
 color3 grey
-test = "Hello World"
 
 TEXT
-${color2}CPU 1${color0}${alignr}${cpu cpu0}%
-${cpubar cpu0 3,}
-${color2}CPU 2${color0}${alignr}${cpu cpu1}%
-${cpubar cpu1 3,}
-${execi 3 cat ./topcpu | awk 'NR==1{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==1{print $2}'}%
-${execi 3 cat ./topcpu | awk 'NR==2{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==2{print $2}'}%
-${execi 3 cat ./topcpu | awk 'NR==3{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==3{print $2}'}%
-${execi 3 cat ./topcpu | awk 'NR==4{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==4{print $2}'}%
-${execi 3 cat ./topcpu | awk 'NR==5{print $1}'} $alignr ${execi 3 cat ./topcpu | awk 'NR==5{print $2}'}%
+${execi 3 ~/.conky/gmd/./psfile.sh}
+${color2}CPU Average${color0}${alignr}${cpu cpu0}%
+${cpubar cpu0 10,}
+${execi 3 cat ./.pscpu | awk 'NR==1{print $1}'} $alignr ${execi 3 cat ./.pscpu | awk 'NR==1{print $2}'}%
+${execi 3 cat ./.pscpu | awk 'NR==2{print $1}'} $alignr ${execi 3 cat ./.pscpu | awk 'NR==2{print $2}'}%
+${execi 3 cat ./.pscpu | awk 'NR==3{print $1}'} $alignr ${execi 3 cat ./.pscpu | awk 'NR==3{print $2}'}%
+${execi 3 cat ./.pscpu | awk 'NR==4{print $1}'} $alignr ${execi 3 cat ./.pscpu | awk 'NR==4{print $2}'}%
+${execi 3 cat ./.pscpu | awk 'NR==5{print $1}'} $alignr ${execi 3 cat ./.pscpu | awk 'NR==5{print $2}'}%
 
 ${color2}RAM ${color0}${alignr}${mem}
-${membar 5,}
-${execi 3 cat ./topmem | awk 'NR==1{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==1{print $2}'} MB
-${execi 3 cat ./topmem | awk 'NR==2{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==2{print $2}'} MB
-${execi 3 cat ./topmem | awk 'NR==3{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==3{print $2}'} MB
-${execi 3 cat ./topmem | awk 'NR==4{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==4{print $2}'} MB
-${execi 3 cat ./topmem | awk 'NR==5{print $1}'} $alignr ${execi 3 cat ./topmem | awk 'NR==5{print $2}'} MB
-${execi 3 top -b -n 1 > gmdcache && node ~/.conky/gmd/gmd.js ./}
-
-
-
-
+${membar 10,}
+${execi 3 cat ./.psmem | awk 'NR==1{print $1}'} $alignr ${execi 3 cat ./.psmem | awk 'NR==1{printf("%.2f \n",(($2 / 1000)))}'} MB
+${execi 3 cat ./.psmem | awk 'NR==2{print $1}'} $alignr ${execi 3 cat ./.psmem | awk 'NR==2{printf("%.2f \n",(($2 / 1000)))}'} MB
+${execi 3 cat ./.psmem | awk 'NR==3{print $1}'} $alignr ${execi 3 cat ./.psmem | awk 'NR==3{printf("%.2f \n",(($2 / 1000)))}'} MB
+${execi 3 cat ./.psmem | awk 'NR==4{print $1}'} $alignr ${execi 3 cat ./.psmem | awk 'NR==4{printf("%.2f \n",(($2 / 1000)))}'} MB
+${execi 3 cat ./.psmem | awk 'NR==5{print $1}'} $alignr ${execi 3 cat ./.psmem | awk 'NR==5{printf("%.2f \n",(($2 / 1000)))}'} MB

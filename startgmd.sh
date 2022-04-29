@@ -5,4 +5,5 @@
 #END
 sleep 2s
 
-conky -c ~/.conky/gmd/'gmd_process_panel' &> /dev/null
+conky -c ~/.conky/gmd/'gmd_process_panel'
+# &> /dev/null

@@ -1,0 +1,15 @@
+awk '                         ##Setting field separator as comma here.
+FNR==2{                           ##Checking condition if line number is 2//x then do following.
+  print;                          ##Print the current line.
+  next}                           ##next will skip all further statements from here.
+{
+  val=$'$1';$'$1'="~";                         ##Setting value of 5th field as ~ here to keep all lines same(to create index for array a).
+  a[$0]+=val                      ##Creating an array named a whose index is current line and its value is variable val value.
+}
+!b[$0]++{                         ##Checking if array b whose index is current line its value is NULL then do following.
+  c[++count]=$0}                  ##Creating an array named c whose index is variable count increasing value with 1 and value is current line.
+END{                              ##Starting END block of awk code here.
+  for(i=1;i<=count;i++){          ##Starting a for loop whose value starts from 1 to till value of count variable.
+     sub("~",a[c[i]],c[i]);       ##Substituting ~ in value of array c(which is actually lines value) with value of SUMMED $5.
+     print c[i]}                  ##Printing newly value of array c where $5 is now replaced with its actual value.
+}' 
