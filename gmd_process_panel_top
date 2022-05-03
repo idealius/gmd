@@ -45,20 +45,19 @@ color2 FFA300
 color3 grey
 
 TEXT
+${execi 3 node ~/.conky/gmd/gmd.js -top ~/.conky/gmd/}
 ${color2}CPU Average${color0}${alignr}${cpu cpu0}%
 ${cpubar cpu0 10,}
-
-${execi 3 sed -n '1,1p;2q' ./.topcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '1,1p;2q' ./.topcpu | cut -d' ' -f 2}%
-${execi 3 sed -n '2,2p;3q' ./.topcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '2,2p;3q' ./.topcpu | cut -d' ' -f 2}%
-${execi 3 sed -n '3,3p;4q' ./.topcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '3,3p;4q' ./.topcpu | cut -d' ' -f 2}%
-${execi 3 sed -n '4,4p;5q' ./.topcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '4,4p;5q' ./.topcpu | cut -d' ' -f 2}%
-${execi 3 sed -n '5,5p;6q' ./.topcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '5,5p;6q' ./.topcpu | cut -d' ' -f 2}%
+${execi 3 sed -n '1,1p;2q' ./.redcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '1,1p;2q' ./.redcpu | cut -d' ' -f 2}%
+${execi 3 sed -n '2,2p;3q' ./.redcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '2,2p;3q' ./.redcpu | cut -d' ' -f 2}%
+${execi 3 sed -n '3,3p;4q' ./.redcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '3,3p;4q' ./.redcpu | cut -d' ' -f 2}%
+${execi 3 sed -n '4,4p;5q' ./.redcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '4,4p;5q' ./.redcpu | cut -d' ' -f 2}%
+${execi 3 sed -n '5,5p;6q' ./.redcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '5,5p;6q' ./.redcpu | cut -d' ' -f 2}%
 
 ${color2}RAM ${color0}${alignr}${mem}
 ${membar 10,}
-${execi 3 sed -n '1,1p;2q' ./.topmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '1,1p;2q' ./.topmem | cut -d' ' -f 2} MB
-${execi 3 sed -n '2,2p;3q' ./.topmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '2,2p;3q' ./.topmem | cut -d' ' -f 2} MB
-${execi 3 sed -n '3,3p;4q' ./.topmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '3,3p;4q' ./.topmem | cut -d' ' -f 2} MB
-${execi 3 sed -n '4,4p;5q' ./.topmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '4,4p;5q' ./.topmem | cut -d' ' -f 2} MB
-${execi 3 sed -n '5,5p;6q' ./.topmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '5,5p;6q' ./.topmem | cut -d' ' -f 2} MB
-${execi 3 node ~/.conky/gmd/gmd.js ./}
+${execi 3 sed -n '1,1p;2q' ./.redmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '1,1p;2q' ./.redmem | cut -d' ' -f 2} MB
+${execi 3 sed -n '2,2p;3q' ./.redmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '2,2p;3q' ./.redmem | cut -d' ' -f 2} MB
+${execi 3 sed -n '3,3p;4q' ./.redmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '3,3p;4q' ./.redmem | cut -d' ' -f 2} MB
+${execi 3 sed -n '4,4p;5q' ./.redmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '4,4p;5q' ./.redmem | cut -d' ' -f 2} MB
+${execi 3 sed -n '5,5p;6q' ./.redmem | cut -d' ' -f 1} $alignr ${execi 3 sed -n '5,5p;6q' ./.redmem | cut -d' ' -f 2} MB

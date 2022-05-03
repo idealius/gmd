@@ -13,3 +13,5 @@ many, many more changes
 
 More logging occurs. Sort algo uses less memory and passes. Debug function active, but not set to save
 
+arguments and functionality now support 'ps' or 'top' output
+ps properly supported, now

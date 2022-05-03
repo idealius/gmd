@@ -1,0 +1,63 @@
+background no 
+double_buffer yes
+
+alignment top_right
+
+border_width 1
+default_color black
+default_outline_color white
+default_shade_color white
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+
+gap_x 130
+gap_y 130
+out_to_console no
+out_to_stderr no
+extra_newline no
+
+own_window yes
+own_window_type desktop
+own_window_transparent yes
+own_window_colour 2F2F2F
+own_window_class Conky
+own_window_argb_visual no
+own_window_argb_value 0
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+minimum_size 170 0
+stippled_borders 0
+update_interval 1.0
+uppercase no
+use_spacer none
+
+show_graph_scale no
+show_graph_range no
+
+use_xft yes
+xftalpha 0.1
+xftfont Droid Sans:size=8
+color0 white
+color1 EAEAEA
+color2 FFA300
+color3 grey
+
+TEXT
+${color2}CPU Average${color0}${alignr}${cpu cpu0}%
+${cpubar cpu0 10,}
+${execi 2 sed -n '1,1p;2q' ~/.conky/gmd/.redcpu | cut -d' ' -f 1} $alignr ${execi 2 sed -n '1,1p;2q' ~/.conky/gmd/.redcpu | cut -d' ' -f 2}%
+${execi 2 sed -n '2,2p;3q' ~/.conky/gmd/.redcpu | cut -d' ' -f 1} $alignr ${execi 2 sed -n '2,2p;3q' ~/.conky/gmd/.redcpu | cut -d' ' -f 2}%
+${execi 2 sed -n '3,3p;4q' ~/.conky/gmd/.redcpu | cut -d' ' -f 1} $alignr ${execi 2 sed -n '3,3p;4q' ~/.conky/gmd/.redcpu | cut -d' ' -f 2}%
+${execi 2 sed -n '4,4p;5q' ~/.conky/gmd/.redcpu | cut -d' ' -f 1} $alignr ${execi 2 sed -n '4,4p;5q' ~/.conky/gmd/.redcpu | cut -d' ' -f 2}%
+${execi 2 sed -n '5,5p;6q' ~/.conky/gmd/.redcpu | cut -d' ' -f 1} $alignr ${execi 2 sed -n '5,5p;6q' ~/.conky/gmd/.redcpu | cut -d' ' -f 2}%
+
+${color2}RAM ${color0}${alignr}${mem}
+${membar 10,}
+${execi 2 sed -n '1,1p;2q' ~/.conky/gmd/.redmem | cut -d' ' -f 1} $alignr ${execi 2 sed -n '1,1p;2q' ~/.conky/gmd/.redmem | cut -d' ' -f 2} MB
+${execi 2 sed -n '2,2p;3q' ~/.conky/gmd/.redmem | cut -d' ' -f 1} $alignr ${execi 2 sed -n '2,2p;3q' ~/.conky/gmd/.redmem | cut -d' ' -f 2} MB
+${execi 2 sed -n '3,3p;4q' ~/.conky/gmd/.redmem | cut -d' ' -f 1} $alignr ${execi 2 sed -n '3,3p;4q' ~/.conky/gmd/.redmem | cut -d' ' -f 2} MB
+${execi 2 sed -n '4,4p;5q' ~/.conky/gmd/.redmem | cut -d' ' -f 1} $alignr ${execi 2 sed -n '4,4p;5q' ~/.conky/gmd/.redmem | cut -d' ' -f 2} MB
+${execi 2 sed -n '5,5p;6q' ~/.conky/gmd/.redmem | cut -d' ' -f 1} $alignr ${execi 2 sed -n '5,5p;6q' ~/.conky/gmd/.redmem | cut -d' ' -f 2} MB
+${execi 2 node ~/.conky/gmd/gmd.js -ps ~/.conky/gmd/}
