@@ -4,7 +4,7 @@ mode: 3
  -1=Both(output to /var/tmp)
   2=User specified output
   3=Zero and Two(Debug)
-undefined
-undefined
+/home/idealius/.conky/gmd/.redmem
+/home/idealius/.conky/gmd/.redcpu
 File output success? : 
 [32mtrue[0m 

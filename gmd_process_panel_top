@@ -45,7 +45,7 @@ color2 FFA300
 color3 grey
 
 TEXT
-${execi 3 node ~/.conky/gmd/gmd.js -top ~/.conky/gmd/}
+${execi 3 ~/.conky/gmd/./gmd.js -top ~/.conky/gmd/}
 ${color2}CPU Average${color0}${alignr}${cpu cpu0}%
 ${cpubar cpu0 10,}
 ${execi 3 sed -n '1,1p;2q' ./.redcpu | cut -d' ' -f 1} $alignr ${execi 3 sed -n '1,1p;2q' ./.redcpu | cut -d' ' -f 2}%

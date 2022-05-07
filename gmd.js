@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /* LICENSE
     You put my github https://github.com/idealius somewhere in your docs or code then cool =)
 */
@@ -30,8 +32,9 @@ const { isNullOrUndefined } = require('util')
 const { exit } = require('process')
 
 var DEBUG_MODE = false //not your compiler's debug, this is not safe for running through conky
-var MAX_LINES = 25
+var MAX_LINES = 5
 var FILE_SOURCE = "top" //default is set to top
+var FILE_SRC_BOOL = true //true for one file source, false for multiple
 
 var INFORM_VERBOSE = false //Really shouldn't change this. console logging enabled, then alias 'inform' below
 var error_log = ""
@@ -43,24 +46,21 @@ var debug_run = 0
 var shell = require('child_process')
 var myfile = require('fs')
 var mode = 1
-var destdir = "File unsaved for: "
+var destdir = ""
 var red_data //this is the data read from ps/top output. it's called red because he's the man who can get you things...
 var output_success = true
 
-//This a file piped from top/ps we parse as our only initial data set
-var file_retries = 100
+var FILE_RETRIES = 100
 
 //Set these up early because error logging
 var my_write_file = function(filename, str, retries) {
-    var i = 0
-
-    while (i < retries) {
+    for (var i = 0; i < retries; i++) {    
         myfile.writeFileSync(filename, str)
         //x console.log("path:", filename)
         //x console.log(data)
-        /* if (!myfile.existsSync(filename)) i++ //x
-         else return true*/
-        i++
+        return
+        // if (!myfile.existsSync(filename)) i++ //x
+        //  else return true*/
     }
 }
 //remoras is that symbiotic fish /w sharks. this 'eats' the useless chars at the EOF //x double check if need this
@@ -90,7 +90,6 @@ var my_read_file = function(filename, retries) {
             var data = myfile.readFileSync(filename, {encoding:'utf8'})
             if (data == "" || data == null || data === undefined) {
                 add_error("Error accessing \'" + filename + "\', file exists, but is empty")
-                // process.exit()
                 continue 
             }
             break
@@ -119,35 +118,48 @@ var copy_file = function(src, dest, retries) { //x deprecated
 var brisk_exit = function(err) {
     // myfile.writeFileSync("gmd_err.log", error_log)
     if (DEBUG_MODE) {
-        if (error_log != null) my_write_file("gmd_err.log", error_log, file_retries)
-        if (inform_log != null) my_write_file("gmd.log", inform_log, file_retries)
-        if (debug_log != null) my_write_file("gmd_debug.log", debug_log, file_retries) //x might want to make a DEBUG_OVERRIDE
+        if (error_log != null) my_write_file("gmd_err.log", error_log, FILE_RETRIES)
+        if (inform_log != null) my_write_file("gmd.log", inform_log, FILE_RETRIES)
+        if (debug_log != null) my_write_file("gmd_debug.log", debug_log, FILE_RETRIES) //x might want to make a DEBUG_OVERRIDE
     }
     process.exit(err)
 }
-
-const myargs = process.argv.slice(2) //remove file location columns 'node', './'
+var myargs = process.argv //remove file location columns 'node', './'
+// console.log (myargs)
+myargs = myargs.slice(2)
 
 //Process cmd line arguments
 var i = 0
 while (myargs[i] != undefined) {// && myargs[i] !== null) {
-    switch (myargs[i]) {
+    var my_arg = myargs[i]
+    var eq = my_arg.indexOf("=")
+    my_arg = (eq > 0) ? my_arg.slice(0,eq) : my_arg
+    // console.log(my_arg)
+    switch (my_arg) {
+        case "-t":
         case "-top": //actually unneeded as long as earlier declaration of FS stays as top
             FILE_SOURCE = "top" //read proc/cpu/mem info from
             break
+        case "-p":
         case "-ps":
             FILE_SOURCE = "ps" //read proc/cpu/mem info from
             break
-        case "-fork":
-            mode = -1 //both print and save, but tied down to ./ for output path
-            destdir = "./"
-            console.log("Print and Save mode")
+        case "-o":
+        case "-onefilesrc":
+            FILE_SRC_BOOL = !FILE_SRC_BOOL
             break
+        case "-m":
+        case "-maxlines":
+            var num = myargs[i].slice(eq+1)
+            MAX_LINES = parseInt(num)
+            // console.log(num)
+            break
+        case "-g":
         case "-gab": //debug
             mode = 3
             DEBUG_MODE = true
             INFORM_VERBOSE = true
-            destdir = "./"
+            if (destdir == "") destdir = "./"
             if (destdir[destdir.length-1] != '/') destdir += '/'
             console.log("User supplied file output mode")
             break
@@ -183,7 +195,7 @@ var add_error = function(err) {
 var inform = function(str){
     if (INFORM_VERBOSE) console.log(str)
 
-    if (str[str.length-1] !="\n") str += "\n"
+    if (str[str.length-1] != "\n") str += "\n"
     inform_log += str
 }
 // DEBUG
@@ -196,22 +208,23 @@ var debug = function(str, unlimited){
     if (!DEBUG_MODE) return //this prevents logging in 'production' mode
     try {
         var my_str = JSON.stringify(str) + ""
+        var str = my_str
     }
     catch {
         return
     }
     if (my_str == last_debug && last_debug != "") {
         debug_run++
-        last_debug = my_str
         return
     }
     else {
         if (debug_run != 0) {
-            my_str = "Last debug message duplicated [" + debug_run + "] times."
+            my_str = "Last debug message duplicated [" + debug_run + "] times.\n" + str 
             debug_run = 0
         }
-
+        
     }
+    last_debug = my_str
     if (my_str[my_str.length-1] !="\n") my_str += "\n"
     debug_log += my_str
     if (DEBUG_MODE) {
@@ -222,11 +235,7 @@ var debug = function(str, unlimited){
 
 
 debug(1)
-// var columns1 = "COLUMNS_CACHE=$COLUMNS & COLUMNS=100 &"
-// var top_cmd = "top -b -n 1 > " + gmd_cache_path + 'tmp'
-// var columns2 = " & COLUMNS=$COLUMNS_CACHE"
-// shell.spawnSync('/bin/bash', ['-c \"top -b -n 1 > ' + gmd_cache_path +'\"']);
-// shell.exec('cp ' + gmd_cache_path + 'tmp ' + gmd_cache_path)
+
 var file_collection = []
 if (FILE_SOURCE == "top") {
     var shell_cmd = "top -b -n 1 > " + gmd_cache_name
@@ -235,20 +244,27 @@ if (FILE_SOURCE == "top") {
     file_collection.push(gmd_cache_name)
 }
 else {
-    var destmem = destdir + ".gmdmemcache"
-    var destcpu = destdir + ".gmdcpucache"
-    //x Need to check if we don't run the ps command twice we will miss truncated process cpu / mem data (caused by ps behavior)
-    // In typical Linux fashion, for some arcane shell reason this doesn't work (and neither does doing two
-    // separate shell.execSyncs):
-    // var shell_cmd = "ps axo rss,comm > " + destmem + " && " + "ps axo pcpu,comm > " + destcpu
-    // Luckily, this works:
-    var shell_cmd = "sh -c \'ps axo rss,comm > " + destmem + " && " + "ps axo pcpu,comm > " + destcpu + "\'"
-    // var shell_cmd = "ps axo pcpu,comm > " + destcpu
-    shell.execSync(shell_cmd)
-    file_collection.push(destmem)
-    file_collection.push(destcpu)
-    
     var header = 1
+    if (FILE_SRC_BOOL) { //one file source, multiple columns
+        var destcomp = destdir + ".gmdcache"
+        var shell_cmd = "sh -c \'ps axo rss,pcpu,comm > " + destcomp + "\'" 
+        shell.execSync(shell_cmd)
+        file_collection.push(destcomp)
+    }
+    else { //multiple files, one numeric column per
+        var destmem = destdir + ".gmdmemcache"
+        var destcpu = destdir + ".gmdcpucache"
+        //x Need to check if we don't run the ps command twice we will miss truncated process cpu / mem data (caused by ps behavior)
+        // In typical Linux fashion, for some arcane shell reason this doesn't work (and neither does doing two
+        // separate shell.execSyncs):
+        // var shell_cmd = "ps axo rss,comm > " + destmem + " && " + "ps axo pcpu,comm > " + destcpu
+        // Luckily, this works:
+        var shell_cmd = "sh -c \'ps axo rss,comm > " + destmem + " && " + "ps axo pcpu,comm > " + destcpu + "\'"
+        // var shell_cmd = "ps axo pcpu,comm > " + destcpu
+        shell.execSync(shell_cmd)
+        file_collection.push(destmem)
+        file_collection.push(destcpu)
+    }
 }
 debug(2)
 
@@ -260,6 +276,12 @@ String.prototype.replaceAt = function(index, replacement) {
 //For deep copying arrays
 function deepCopy(array) {
     return JSON.parse(JSON.stringify(array));
+}
+
+//Sanitize numbers
+function sanitize(myvar) {
+    // return (myvar === null || myvar === undefined || isNaN(myvar)) ? 0 : parseFloat(myvar)
+    return isNaN(myvar) ? 0 : parseFloat(myvar)
 }
 
 
@@ -312,12 +334,15 @@ class data_fao {
     // Memory is column 10 from top
     extract_column(col, source_row) {
         "use strict"; //x need to normalize
+        var col_repeat = -1 //column
         //v edge case
-        if (col == 1 && source_row[0] != ' ') return source_row.slice(0, source_row.indexOf(' '))
+        if (source_row[0] != ' ') {
+            if (col == 0 ) return source_row.slice(0, source_row.indexOf(' ')) // doesn't handle single column case
+            col_repeat++
+        }
 
         var a = 0 //index of 'cursor' on begin mem string
         var b = 0 //index of 'cursor' on end mem string
-        var col_repeat = 0 //column
         
         while (col_repeat < col && a < source_row.length) {
             
@@ -326,16 +351,19 @@ class data_fao {
                 col_repeat++
                 if (col_repeat >= col) {
                     b = source_row.indexOf(' ', a+2)
-                    b = (b == -1) ? source_row.indexOf('\n', a+2) : b
+                    if (b == -1) {
+                        b = source_row.indexOf('\n', a+2)
+                        if (b == -1) b = source_row.length
+                    }
+                    
                 }
                 //Cap it at the end of the loop...
             }
             //x debug(a, b)
             a++
         }
-        var ret = source_row.slice(a, b)
-        // ret = (ret === null || ret === undefined || isNaN(ret)) ? 0 : ret //x debug
-        return ret
+        // ret = sanitize(ret) // (ret === null || ret === undefined || isNaN(ret)) ? 0 : ret //x debug
+        return source_row.slice(a, b)
     }
 
 
@@ -345,243 +373,359 @@ class data_fao {
             result: false,
             index: 0
         }
-        // if (search_str == "chrome") console.log("CHROME") //notorious process hog if you use extensions
         if (!isString(search_str)) return a    
         
-        // if (search_str == "chrome") console.log("SUCCESS 1")
         //x debug(search_str + " SEARCH STR")
         for (var i = 0; i < array_str.length; i++) { //array level...
-            // v we're not interested in trailing chars past our search terms length, this is for proc grouping
-            var cut_str = array_str[i].slice(0,search_str.length) //string level...
-            if (search_str == cut_str) {
-                var tail = array_str[i].slice(search_str.length)
-                // v Check that our tail doesn't have regular alpha-numeric chars besides our parentheses
-                // compare against decimal unicode table, basically if it's anything but what we use to label dupe procs it dq's the dupe
-                var tail_exception = false
-                var ii = 0
-                while (!tail_exception && ii < tail.length) {
-                    var my_char = tail.charCodeAt(ii)
-                    if (( my_char < 40) || 
-                        (my_char > 42 && my_char < 47) || 
-                        my_char > 59 ) {
-                            
-                            tail_exception = true
-                            //debug("TAIL EXCEPTION", tail, tail[ii], my_char) // I NEED to move to next iteration instead of returning
-                            break
-
-                    }
-                    else ii++
-                }
-                // console.log ("TAIL: ", tail)
-                if (!tail_exception) {
-                    a.result = true
-                    a.index = i
-                    break
-                }
+            if (search_str == array_str[i]) { //x
+                a.result = true
+                a.index = i
+                break
             }
         }
-        
-        // if (search_str == "chrome") console.log("SUCCESS 3")
-        // v Not even sure this is needed anymore
-        //This double checks there's no '+' before the '('. This doesn't help for processes that have a '+' right
-        //there positionally alongside a duplicate process, but with a longer filename. However, it still
-        //takes care of the other edge case which is much more common - where the + is for long process filenames)
-        // if (a.result) {
-        //     var i = a.index 
-        //     var start_pos = array_str[i].length //str level
-        //     var parenth_pos = array_str[i].indexOf('(', i)
-        //     start_pos = (parenth_pos > 0) ? parenth_pos : start_pos
-        //     if (array_str[start_pos-1] == '+') a.result = false
-        // }
-        // if (search_str == "chrome" && a.result) console.log("SUCCESS 4 \n")
-
         return a
     }
 
-    
-    
-    
     //Main data consolidation loop with details inline:
     collapse_data() { 
         debug(5)
-        // debug(this.fc.columns[0], true)
-        // debug(this.fc.columns[0][0].col_num, true)
-        debug(5.5)
-        
-        // debug(this.fc.columns, true)
+
         var marked_for_del = [] //hash for all the rows of duplicate name columns        
         var marked_for_label = [] //hash for all the rows of duplicate name columns        
-        this.fc.columns.forEach(function() { marked_for_del.push([]) 
-                                             marked_for_label.push([]) 
-                                            })
-        
 
-        for (var c = 0; c < this.fc.columns.length; c++) {
-            var cache_data = this.fc.columns[c].cache
-            // row to change | value to change to
-            debug(c + ' = COLUMN NUM ' + cache_data.length)
+        // The following is a 
+        // refactoring of the loop to accomodate either one data source, or
+        // multiple data source "modes"
+        if (this.lonesrc) {
+            var cache_data = this.fc.columns[0].cache
             for (var i = 0; i < cache_data.length; i++) {
-                var raw = this.extract_column(this.fc.columns[c].col_num, cache_data[i]) //Memory, cpu data
-                // debug("INDEX:", i, ret)
-                // debug("COLUMN NUM:" + this.fc.columns[c].col_num)
-                // var extract_mem = decimal_round(parseFloat(ret) / 1000, 2) //Convert to MB ( / 1000) and adjust decimals
-                // debug(6)
-                // debug("RETURN: \'" + ret + "\'")
-    
-                if (this.fc.columns[c].conversion != null) { //conversion function check
-                    //x console.log("CONVERSION != null")
-                    raw = parseFloat(this.fc.columns[c].conversion(raw))
-                }
-                else raw = parseFloat(raw)
-                // var raw = decimal_round(parseFloat(ret), 2) //value extraction, order is important here
-                
-                // values.forEach(el => console.log("VALUES",el))
-            
-     
-                //May as well clean up the bottom of the name list... //x Should refactor this to the readfile stage...       
                 if (cache_data.length - i < 2) { // only check last couple lines
-                    if (this.fc.columns[c].my_name_data[i] == " " || this.fc.columns[c].my_name_data[i] == "" || !isString(this.fc.columns[c].my_name_data[i])) {
-                        marked_for_del[c].push(true)
+                    if (this.fc.columns[0].my_name_data[i] == "" || !isString(this.fc.columns[0].my_name_data[i])) { //x this.fc.columns[c].my_name_data[i] == " " ||
+                        marked_for_del.push(true)
                         continue
                     }
+                }
+                var raw = []
+                for (var c = 0; c < this.fc.columns.length; c++) {
+                    //May as well clean up the bottom of the name list... //x Should refactor this to the readfile stage...       
+
+                    raw.push(this.extract_column(this.fc.columns[c].col_num, cache_data[i])) //Memory, cpu data
+                    
+                    if (this.fc.columns[c].conversion != null) { //conversion function check
+                        //x console.log("CONVERSION != null")
+                        raw[c] = parseFloat(this.fc.columns[c].conversion(raw[c]))
+                    }
+                    else raw[c] = parseFloat(raw[c])
+                    this.fc.columns[c].numeric.push(raw[c]) // we dont know if its a dupe yet so we round again probably can refactor
                 }
 
                 //check for dupe
                 var dupe = []
                 dupe.push({result:false})
                 // console.log("HI eye:", i)
-                var tmp_str_array = this.fc.columns[c].my_name_data.slice(0, i) // clip name row array to only search up to our current index
+                var tmp_str_array = this.fc.columns[0].my_name_data.slice(0, i) // clip name row array to only search up to our current index. this ensures it's always the first name in the list which is labeled and kept
                 if (i != 0) { // v Start checking for duplicate
-                    var dupe = this.contains(this.fc.columns[c].my_name_data[i], tmp_str_array)
+                    var dupe = this.contains(this.fc.columns[0].my_name_data[i], tmp_str_array)
                 }
 
-                this.fc.columns[c].numeric.push(decimal_round(parseFloat(raw), 2))
-                marked_for_label[c].push(0)
+                marked_for_label.push(0)
                 if (!dupe.result) {
-                    marked_for_del[c].push(false)
                     //No dupe, new name, add new rows to our cpu/mem arrays
+                    marked_for_del.push(false)
+                    raw.forEach(el => raw[c] = decimal_round(sanitize(raw[c]), 2)) // rounding sparingly in the right spots avoids 'rounding creep' for summing duplicates
                 }
                 else { //"Duplicate" so add up totals...
-                    marked_for_del[c].push(true)
-                    marked_for_label[c][dupe.index] ++
-                    
+                    marked_for_del.push(true)
+                    marked_for_label[dupe.index] ++
+                    // console.log('Original index:' + dupe.index, 'I:' +i) //good for seeing if dupe.index is too high (higher than i)
                     // console.log("LENGTH VS:",this.fc.columns[c].numeric.length, dupe.index, i) //x dupe.index is problem
-                    var article = [this.fc.columns[c].numeric[dupe.index], raw] 
-                    // article.forEach( (el, indy) => article[indy] = (el === null || el === undefined || isNaN(el)) ? 0 : parseFloat(el) )
-                    var my_float = article.reduce((a, b) => a + b, 0) //sum single column array
-
-                    debug("SUM:" + my_float + " DUPE:" + this.fc.columns[c].numeric[dupe.index] + " RAW:" + raw)
-                    this.fc.columns[c].numeric[dupe.index] = decimal_round(my_float, 2)
-                   
+                    for (var c = 0; c < this.fc.columns.length; c++) {
+                        var article = [this.fc.columns[c].numeric[dupe.index], raw[c]] 
+                        article.forEach( (el, indy) => article[indy] = sanitize(el) )
+                        var my_float = article.reduce((a, b) => a + b, 0) //sum single column array
+                        // debug(my_float + ' ' + raw[c])
+                        // debug("SUM:" + my_float + " DUPE:" + this.fc.columns[c].numeric[dupe.index] + " RAW:" + raw)
+                        this.fc.columns[c].numeric[dupe.index] = decimal_round(my_float, 2)
+                    }                   
                 }
             }
         }
-    
+        else {
+            this.fc.columns.forEach(function() { marked_for_del.push([]) 
+                                                 marked_for_label.push([]) })
+            for (var c = 0; c < this.fc.columns.length; c++) {
+                var cache_data = this.fc.columns[c].cache
+                for (var i = 0; i < cache_data.length; i++) {
+                    var raw = this.extract_column(this.fc.columns[c].col_num, cache_data[i])
+                    //May as well clean up the bottom of the name list... //x Should refactor this to the readfile stage...       
+                    if (cache_data.length - i < 2) { // only check last couple lines
+                        if (this.fc.columns[c].my_name_data[i] == "" || !isString(this.fc.columns[c].my_name_data[i])) { //x cut this out: this.fc.columns[c].my_name_data[i] == " " || 
+                            marked_for_del[c].push(true)
+                            continue
+                        }
+                    }
+
+                    if (this.fc.columns[c].conversion != null) { //conversion function check
+                        //x console.log("CONVERSION != null")
+                        raw = parseFloat(this.fc.columns[c].conversion(raw))
+                    }
+                    else raw = parseFloat(raw)
+                    //check for dupe
+                    var dupe = []
+                    dupe.push({result:false})
+                    // console.log("HI eye:", i)
+                    var tmp_str_array = this.fc.columns[c].my_name_data.slice(0, i) // clip name row array to only search up to our current index
+                    if (i != 0) { // v Start checking for duplicate
+                        var dupe = this.contains(this.fc.columns[c].my_name_data[i], tmp_str_array)
+                    }
+
+                    this.fc.columns[c].numeric.push(decimal_round(raw, 2)) //x trying without parseFloat()
+
+                    marked_for_label[c].push(0)
+                    if (!dupe.result) {
+                        //No dupe, new name, add new rows to our cpu/mem arrays
+                        marked_for_del[c].push(false)
+                    }
+                    else { //"Duplicate" so add up totals...
+                        marked_for_del[c].push(true)
+                        marked_for_label[c][dupe.index] ++
+                        // console.log("LENGTH VS:",this.fc.columns[c].numeric.length, dupe.index, i) //x dupe.index is problem
+
+                        var article = [this.fc.columns[c].numeric[dupe.index], raw] 
+                        article.forEach( (el, indy) => article[indy] = sanitize(el) )
+                        var my_float = article.reduce((a, b) => a + b, 0) //sum single column array
+                        // debug(my_float + ' ' + raw)
+                        // debug("SUM:" + my_float + " DUPE:" + this.fc.columns[c].numeric[dupe.index] + " RAW:" + raw)
+                        this.fc.columns[c].numeric[dupe.index] = decimal_round(my_float, 2)
+                    }
+                }
+            }
+        }
         debug(6)    
-        
-        //Delete marked in the name arrays and build our lists
-        for (var c = 0; c < this.fc.columns.length; c++) {
+        // debug(this)
+        // this.fc.columns.forEach(el => console.log(el.numeric))
+        //'Delete' marked_for_del in the name arrays and build our lists
+        if (this.lonesrc) {
             var cache_my_name_data = []
-            var cache_numeric_data = []
             var cache_marked_label = []
-            // console.log (this.fc.columns[c].numeric.length, 'vs', this.fc.columns[c].my_name_data.length)
-            for (var i = 0; i < this.fc.columns[c].my_name_data.length; i++) {
-                if (!marked_for_del[c][i]) {
-                    // if (marked_for_label)
-                    cache_my_name_data.push(this.fc.columns[c].my_name_data[i])
-                    cache_numeric_data.push(this.fc.columns[c].numeric[i])
-                    cache_marked_label.push(marked_for_label[c][i])
+            var cache_numeric_data = []
+            this.fc.columns.forEach(function() { cache_numeric_data.push([]) } )
+            // debug(cache_numeric_data.length + ' ' + cache_numeric_data + '..<-')
+            for (var i = 0; i < this.fc.columns[0].my_name_data.length; i ++) {
+                if (!marked_for_del[i]) {
+                    cache_my_name_data.push(this.fc.columns[0].my_name_data[i])
+                    cache_marked_label.push(marked_for_label[i])
+                    for (var c = 0; c < this.fc.columns.length; c++) {        
+                        cache_numeric_data[c].push(this.fc.columns[c].numeric[i])
+                    }
                 }
-
             }
-            this.fc.columns[c].my_name_data = cache_my_name_data
-            this.fc.columns[c].numeric = cache_numeric_data
-            marked_for_label[c] = cache_marked_label
+            for (var c = 1; c < this.fc.columns.length; c++) {
+                for (var i = 0; i < this.fc.columns[0].my_name_data.length; i ++) {
+                    if (!marked_for_del[i]) {
+                        cache_numeric_data[c].push(this.fc.columns[c].numeric[i])
+                    }
+                }
+            }
+            for (var c = 0; c < this.fc.columns.length; c++) {
+                this.fc.columns[c].numeric = cache_numeric_data[c]
+                // debug(cache_numeric_data[c])
+            }
+            this.fc.columns[0].my_name_data = cache_my_name_data
+            marked_for_label = cache_marked_label
         }
+        else {
+            for (var c = 0; c < this.fc.columns.length; c++) {
+                var cache_my_name_data = []
+                var cache_numeric_data = []
+                var cache_marked_label = []
+                // console.log (this.fc.columns[c].numeric.length, 'vs', this.fc.columns[c].my_name_data.length)
+                for (var i = 0; i < this.fc.columns[c].my_name_data.length; i++) {
+                    if (!marked_for_del[c][i]) {
+                        // if (marked_for_label)
+                        cache_numeric_data.push(this.fc.columns[c].numeric[i])
+                        cache_my_name_data.push(this.fc.columns[c].my_name_data[i])
+                        cache_marked_label.push(marked_for_label[c][i])
+                    }
+                }
+                this.fc.columns[c].my_name_data = cache_my_name_data
+                this.fc.columns[c].numeric = cache_numeric_data
+                marked_for_label[c] = cache_marked_label
+            }
+        }
+
+        if (this.lonesrc) {
+            //Build Composite 1 list ready for sorting
+            var row_count = this.fc.columns[0].my_name_data.length
+            for (var i = 0; i < row_count; i++) {
+                //xNOTE we didnt slice numeric to name this time could cause issue later
+                var my_name = this.fc.columns[0].my_name_data[i]
+                var my_label = marked_for_label[i]
+                var new_name = (my_label == 0) ? my_name : my_name + ':(' + (my_label + 1) + ')'
+                this.fc.columns[0].composite1.push(Array(this.fc.columns.length + 1))
+                this.fc.columns[0].composite1[i][0] = new_name
+                for (var c = 0; c < this.fc.columns.length; c++) {
+                    this.fc.columns[0].composite1[i][c+1] = this.fc.columns[c].numeric[i]
+                    //slice off the ends of our mem and cpu lists to match the name list
+                }
+            }
+            // debug (this.fc.columns[0].composite1 + '<-2')
+        }
+        else {
+            //Build 2+ Composite 1 lists ready for sorting
+            for (var c = 0; c < this.fc.columns.length; c++) {
+                //slice off the ends of our mem and cpu lists to match the name list
+                var row_count = this.fc.columns[c].my_name_data.length
+                var my_numeric = this.fc.columns[c].numeric.slice(0,row_count) //this.fc.columns[c].numeric // variable names getting a little long..//x possibly optional
+                for (var i = 0; i < this.fc.columns[c].my_name_data.length; i++) {
+                    // my_numeric[i] = (my_numeric[i] === null || my_numeric[i] === undefined || isNaN(my_numeric[i])) ? 0 : my_numeric[i]
+                    var my_label = marked_for_label[c][i]
+                    var my_name = this.fc.columns[c].my_name_data[i]
+                    var new_name = (my_label == 0) ? my_name : my_name + ':(' + (my_label + 1) + ')'
+                    this.fc.columns[c].composite1.push([new_name, my_numeric[i]])
+                }
+            }
+        }
+    }
+
     
-        //Build Composite 1 list ready for sorting
-        for (var c = 0; c < this.fc.columns.length; c++) {
-            var name_len = this.fc.columns[c].my_name_data.length
-            //slice off the ends of our mem and cpu lists to match the name list
-            var my_numeric = this.fc.columns[c].numeric.slice(0,name_len) //this.fc.columns[c].numeric // variable names getting a little long..
-            for (var i = 0; i < this.fc.columns[c].my_name_data.length; i++) {
-                // my_numeric[i] = (my_numeric[i] === null || my_numeric[i] === undefined || isNaN(my_numeric[i])) ? 0 : my_numeric[i]
-                var my_name = (marked_for_label[c][i] == 0) ? this.fc.columns[c].my_name_data[i] : this.fc.columns[c].my_name_data[i] + ':(' + (marked_for_label[c][i] + 1) + ')'
-                this.fc.columns[c].composite1.push([my_name, my_numeric[i]])
-                // this.fc.columns[c].numeric[i] = my_numeric
-                // debug(my_numeric[i])
-            }
-        }
-            
-    }
    
-    //basically a brute force element swapping function that gets around modifying arrays out of scope by deep cloning it first
-    array_swap_element = function(arr, fromIndex, toIndex) {
-        var toIndex_cache = arr[toIndex]
-        var fromIndex_cache = arr[fromIndex]
-        arr[fromIndex] = toIndex_cache
-        arr[toIndex] = fromIndex_cache //x I need to look at this algo all over again because my_arr = modify_arr_func(my_arr) appears to work when I use node shell
-        return arr
-    }
+    // array_swap_element = function(arr, fromIndex, toIndex) { //deprecated
+    //     var toIndex_cache = arr[toIndex]
+    //     var fromIndex_cache = arr[fromIndex]
+    //     arr[fromIndex] = toIndex_cache
+    //     arr[toIndex] = fromIndex_cache //x I need to look at this algo all over again because my_arr = modify_arr_func(my_arr) appears to work when I use node shell
+    //     return arr
+    // }
 
-    //Sort lists descending from the top-to-bottom by second column
-    //Over complicated because of my current ignorance on JS array scope management
-    //Basically, we're looking for the biggest number larger than us
-    // - /w restarting the loop, resuming an inner loop, and array cloning when swapping rows
+    // Sort lists descending from the top-to-bottom by second column
+    // Basically, we're looking for the biggest number larger than us to swap as we
+    // descend the array w/o restarting the loop
     my_sort = function () {
         //x debug(data_array.length)
-        for (var c = 0; c < this.fc.columns.length; c++) {
-  
-            var shifts = 0
-            var cache_array = this.fc.columns[c].composite1
-            for (var i=0;i<cache_array.length;i++) {
-                var mem_cont = cache_array[i][1]
-                var mem_pos = i
-                    
-                for (var k=i+1;k<cache_array.length;k++) {
-                    var next_seed = cache_array[k][1]
-                    if (next_seed > mem_cont) {
-                        mem_cont = next_seed
-                        mem_pos = k
-                    }                           
+        if (this.lonesrc) {
+            var og_data = this.fc.columns[0].composite1 // this is merely for abbreviation purposes
+            var done = false
+            for (var c = 0; c < this.fc.columns.length; c++) {
+                var shifts = 0
+                var comp_cache = og_data
+                this.fc.columns[c].composite1 = og_data
+                for (var i=0;i<comp_cache.length;i++) {
+                    var mem_cont = comp_cache[i][c+1]
+                    var mem_pos = i
+                        
+                    for (var k=i+1;k<comp_cache.length;k++) {
+                        var next_seed = comp_cache[k][c+1]
+                        if (next_seed > mem_cont) {
+                            mem_cont = next_seed
+                            mem_pos = k
+                        }                           
+                    }
+                    if (mem_pos != i) {   //swap two values:      
+                        var swapper = comp_cache[mem_pos]
+                        comp_cache[mem_pos] = comp_cache[i]
+                        comp_cache[i] = swapper
+                        shifts++
+                        if (i >= this.col_len()) { done = true; break }
+                    }
+                    if (done) break
                 }
-                if (mem_pos != i) {
-                    cache_array = this.array_swap_element(cache_array, i, mem_pos)
-                    shifts++
-                }
+                
+                debug("Shifts: " + shifts)
+                this.fc.columns[c].composite1 = deepCopy(comp_cache) // deepCopy is necessary here because if not col 1+ 
+                                                                     // has no populated composite2's, yet are based 
+                                                                     // on col 0's composite1 so refs get duped
             }
-            
-            debug("Shifts: " + shifts)
-            this.fc.columns[c].composite1 = cache_array
+        }
+        else {
+            for (var c = 0; c < this.fc.columns.length; c++) {
+    
+                var shifts = 0
+                var comp_cache = this.fc.columns[c].composite1
+                for (var i=0;i<comp_cache.length;i++) {
+                    var mem_cont = comp_cache[i][1]
+                    var mem_pos = i
+                        
+                    for (var k=i+1;k<comp_cache.length;k++) {
+                        var next_seed = comp_cache[k][1]
+                        if (next_seed > mem_cont) {
+                            mem_cont = next_seed
+                            mem_pos = k
+                        }                           
+                    }
+                    if (mem_pos != i) {   //swap two values:      
+                        var swapper = comp_cache[mem_pos]
+                        comp_cache[mem_pos] = comp_cache[i]
+                        comp_cache[i] = swapper
+                        shifts++
+                    }
+                }
+                
+                debug("Shifts: " + shifts)
+                this.fc.columns[c].composite1 = comp_cache
+            }
         }
     }
 
-    giant_strings = function() {
+    col_len() {
+        return (MAX_LINES > this.fc.columns[0].my_name_data.length) ? this.fc.columns[0].my_name_data.length : MAX_LINES
+    }
+
+    giant_strings() {
         //Convert to one big string with '\n's instead of ','s (at least when they're written)
         
-        for (var c = 0; c < this.fc.columns.length; c++) {
-            var giant_string = ""
-            // this.fc.columns[c].composite2 = []
-            // debug(my_name_data.length + '\n' + my_proc_cpu_array + '\n' + my_proc_mem_array)
-            var lines = (MAX_LINES > this.fc.columns[c].my_name_data.length) ? this.fc.columns[c].my_name_data.length : MAX_LINES
-            //MAX_LINES
-            for (var i = 0; i < lines; i++) {
-                    //              name  v                     +    column data v
-                    giant_string += this.fc.columns[c].composite1[i][0] + ' ' + this.fc.columns[c].composite1[i][1] + '\n'
+        if (this.lonesrc) {
+            for (var c = 0; c < this.fc.columns.length; c++) {
+                var giant_string = ""
+                // this.fc.columns[c].composite2 = []
+                // debug(my_name_data.length + '\n' + my_proc_cpu_array + '\n' + my_proc_mem_array)
+                for (var i = 0; i < this.col_len(); i++) {
+                        //              name  v                     +    column data v
+                        for (var k = 0; k < this.fc.columns.length+1; k++ ) {
+                            // more columns
+                            giant_string += this.fc.columns[c].composite1[i][k] + ' '
+                        }
+                        giant_string = giant_string.slice(0,giant_string.length-1)
+                        giant_string += '\n'
+                }
+                this.fc.columns[c].composite2 = giant_string
             }
-            this.fc.columns[c].composite2 = giant_string
+        }
+        else {
+
+            for (var c = 0; c < this.fc.columns.length; c++) {
+                var giant_string = ""
+                // this.fc.columns[c].composite2 = []
+                // debug(my_name_data.length + '\n' + my_proc_cpu_array + '\n' + my_proc_mem_array)
+                var row_total = (MAX_LINES > this.fc.columns[c].my_name_data.length) ? this.fc.columns[c].my_name_data.length : MAX_LINES
+                //MAX_LINES
+                for (var i = 0; i < row_total; i++) {
+                        //              name  v                     +    column data v
+                        giant_string += this.fc.columns[c].composite1[i][0] + ' ' + this.fc.columns[c].composite1[i][1] + '\n'
+                }
+                this.fc.columns[c].composite2 = giant_string
+            }
         }
     }
 
     save_all() {
         //Save file
-        if (mode != 0) {
+        if (mode == 0) return
+
         for (var c = 0; c < this.fc.columns.length; c++) {
             var path = this.fc.columns[c].dest
-                debug('saving...')
-                debug("PATH:" + path, this.fc.columns[c].composite2)
-                my_write_file(path, this.fc.columns[c].composite2, file_retries)
-            }
+            debug('saving...')
+            debug("PATH:" + path, this.fc.columns[c].composite2)
+            my_write_file(path, this.fc.columns[c].composite2, FILE_RETRIES)
+        }
+    }
+
+    save_one(col) {
+        if (mode != 0) {
+            var path = this.fc.columns[col].dest
+            debug('saving...')
+            debug("PATH:" + path, this.fc.columns[col].composite2)
+            my_write_file(path, this.fc.columns[col].composite2, FILE_RETRIES)
         }
     }
 
@@ -592,14 +736,39 @@ class data_fao {
         }
     }
 
+    print_one(col) {
+        debug('data:')
+        console.dir(this.fc.columns[col].composite1)
+    }
+
+    save_conky(path) {
+        //<- some more formatting for fieldname <-> column transitions
+        var my_str = ""
+        for (var c = 0; c < this.fc.columns.length; c++) {
+            // ${color2}CPU Average${color0}${alignr}${cpu cpu0}%
+            // ${cpubar cpu0 10,}
+            if (this.fc.columns[c].bar) {
+                my_str += this.fc.columns[c].bar_lua_func(this.fc.columns[c].fieldname)
+            }
+            // my_str += this.fc.columns[c].fieldname 
+            for (var i = 0; i < this.col_len(); i++) {
+                my_str += this.fc.columns[c].composite1[i][0] +" $alignr " +  this.fc.columns[c].composite1[i][c+1] + this.fc.columns[c].label
+                my_str += '\n'
+            }
+            my_str += '\n'
+        }
+        // console.log(my_str)
+        my_write_file(path, my_str, FILE_RETRIES)
+    }
+
     //UTILITARY FUNCTION END
     
-    
+    //This is what our data structure looks like inside our class:
+    //Not 100% required, but it's useful to look at and use in the constructor as a target location
     fc = { // fc = file collection
-        my_name_data:[], //this is kept out of fc because it is considered constant per run
-        cache:[],
         srcfiles:[""],
-        columns:[ { cache:null, //our og file read
+        lonesrce:false, //file src
+        columns:[ { cache:null, //our og file read //x used?
                     my_name_data:[],
                     col_num:0,   //column number, should be 1 to 1 with destfiles & data //or just do this object style
                     conversion:null,  //conversion function (if applicable)
@@ -611,43 +780,60 @@ class data_fao {
         } ]
     }
 
-    constructor(fc) {
+    // src_len(){
+    //     if (this.lonesrc) return 1
+    //     else return this.fc.srcfiles.length
+    // }
+
+    constructor(lonesrc, fc) {
         this.fc = fc //? needed?
+        this.lonesrc = lonesrc
         // this.fc = deepCopy(fc) //? needed?
         debug(4)
         var f = 0
         // debug(this.fc.srcfiles.length)
-        for (var c = 0; c < this.fc.columns.length; c++) {
-            this.fc.columns[c].numeric = [] //just some initialization of arrays for push
-            this.fc.columns[c].composite1 = [] 
-            this.fc.columns[c].composite2 = []
-            this.fc.columns[c].my_name_data = []
-            var cache_data = my_read_file(this.fc.srcfiles[c], file_retries)
+
+        if (this.lonesrc) {
+            this.fc.columns[0].my_name_data = []
+            // debug(this.fc.srcfiles + ' <-')
+            var cache_data = my_read_file(this.fc.srcfiles[0], FILE_RETRIES)
             cache_data = cache_data.split("\n")
             cache_data = cache_data.splice(header)
-
             //Get names really quick
-            for (var i = 0; i < cache_data.length; i++) {
-                var cache_string = cache_data[i].slice(cache_data[i].lastIndexOf(" ")+1)
-                if (cache_string[cache_string.length-1] == '\n') {
-                    cache_string = cache_string.pop() 
-                }
-                // debug(cache_string)
-                this.fc.columns[c].my_name_data.push(cache_string) //dont need second arg for slice  
+            this.fc.columns[0].cache = cache_data
+            for (var c = 0; c < this.fc.columns.length; c++) { //get names really quick
+                this.fc.columns[c].composite1 = [] 
+                this.fc.columns[c].composite2 = []
+                this.fc.columns[c].numeric = [] //just some initialization of arrays for push
             }
-            this.fc.columns[c].cache = cache_data
+            for (var i = 0; i < cache_data.length; i++) { 
+                var cache_string = cache_data[i].slice(cache_data[i].lastIndexOf(" ")+1)
+                this.fc.columns[0].my_name_data.push(cache_string)
+            }
         }
-        this.cache = this.fc.columns[0].cache
-        this.my_name_data = this.fc.columns[0].my_name_data
-        // this.fc.columns.forEach(el => console.log(el.cache))
-            // debug(4.5)
-            // this.collapse_data()
-            // debug(8)
-            // this.my_sort()
-            // debug(8.5)
-            // this.giant_strings()
-            // debug(9)
-            // this.save_all()
+        else {
+            for (var c = 0; c < this.fc.columns.length; c++) {
+                if (this.lonesrc && c > 0) break
+                this.fc.columns[c].numeric = [] //just some initialization of arrays for push
+                this.fc.columns[c].composite1 = [] 
+                this.fc.columns[c].composite2 = []
+                this.fc.columns[c].my_name_data = []
+                var cache_data = my_read_file(this.fc.srcfiles[c], FILE_RETRIES)
+                cache_data = cache_data.split("\n")
+                cache_data = cache_data.splice(header)
+
+                //Get names really quick
+                for (var i = 0; i < cache_data.length; i++) {
+                    var cache_string = cache_data[i].slice(cache_data[i].lastIndexOf(" ")+1)
+                    // if (cache_string[cache_string.length-1] == '\n') {
+                    //     cache_string = cache_string.pop() 
+                    // }
+                    // debug(cache_string)
+                    this.fc.columns[c].my_name_data.push(cache_string) //dont need second arg for slice  
+                }
+                this.fc.columns[c].cache = cache_data
+            }
+        }
     }
 }
 /****************************************************************************************/
@@ -657,7 +843,7 @@ debug(3)
 debug(file_collection)
 
 if (FILE_SOURCE == "top") {
-    var my_job = new data_fao({
+    var my_job = new data_fao(FILE_SRC_BOOL, {
         srcfiles: file_collection,
         columns: [ {col_num:6, conversion:function(el) {return decimal_round(el / 1000, 2)}, dest: destdir + ".redmem"},
                    {col_num:9, conversion:null,                                              dest: destdir + ".redcpu"},
@@ -665,27 +851,55 @@ if (FILE_SOURCE == "top") {
     })
 }
 else { //or ps
-    var my_job = new data_fao({
-        srcfiles: file_collection,
-        columns: [ {col_num:1, conversion:function(el) {return decimal_round(el / 1000, 2)}, dest: destdir + ".redmem"},
-                   {col_num:1, conversion:null,                                              dest: destdir + ".redcpu"},
-            ] 
-    })
+
+    if (FILE_SRC_BOOL) {
+        var my_job = new data_fao(FILE_SRC_BOOL, {
+            srcfiles: file_collection,
+            columns: [ {col_num:1, conversion:null,
+                        dest: destdir + ".redcpu" ,
+                        fieldname: "Average CPU",
+                        label: "%",
+                        bar: true,
+                        bar_lua_func: function(str) {return "${color white}" + str + "${color EAEAEA}${alignr}${cpu cpu0}%\n${cpubar cpu0 10,}\n"} },
+                        
+                        {col_num:0, conversion:function(num) {return decimal_round(num / 1000, 2)},
+                        dest: destdir + ".redmem" ,
+                        fieldname: "RAM",
+                        label: " MB",
+                        bar: true,
+                        bar_lua_func: function(str) {return "${color white}" + str + "${color EAEAEA}${alignr}${mem}\n${membar 10,}\n"} },
+                       
+                ] 
+        })
+    }
+    else {
+        var my_job = new data_fao(FILE_SRC_BOOL, {
+            srcfiles: file_collection,
+            columns: [ {col_num:1, conversion:function(el) {return decimal_round(el / 1000, 2)}, dest: destdir + ".redmem"},
+                       {col_num:1, conversion:null,                                              dest: destdir + ".redcpu"},
+                ] 
+        })
+    }
 }
 
+// debug(my_job.fc.columns[0].my_name_data)
+// console.log(my_job.fc.columns)
 
 debug(4.5)
 my_job.collapse_data()
 debug(8)
-// console.log(my_job.fc.columns[0].composite1)
-// console.log(my_job.fc.columns[1].composite1)
 my_job.my_sort()
-// console.log(my_job.fc.columns[0].composite1)
-// console.log(my_job.fc.columns[1].composite1)
+// console.log(my_job.fc.columns, '<-')
 debug(8.5)
 my_job.giant_strings()
 debug(9)
-my_job.save_all()
+// console.dir(my_job.fc.columns[0])
+// console.dir(my_job.fc.columns[1])
+my_job.save_conky(destdir + ".redeval")
+// my_job.save_all()
+
+
+
 
 
 
@@ -694,9 +908,6 @@ if (mode != 1) {
     my_job.print_all()
 }
 
-// debug(my_name_data, my_cpu_data ,my_mem_data)
-
-
 var verbose = function(){
     inform("\n")
     inform("mode: " + mode)
@@ -704,13 +915,15 @@ var verbose = function(){
     // inform("current setting:", mode,"\n")
     if (!output_success) inform("Destination Directory: " + destdir)
     if (mode != 0) {
-        my_job.fc.columns.forEach(el => inform(el.destdir + ""))
+        if (my_job.fc.lonesrc) my_job.fc.columns[0].dest
+        else my_job.fc.columns.forEach(el => inform(el.dest))
         inform("File output success? : ")
         inform("\x1b[32m" + output_success.toString()+"\x1b[0m ")
     }
     else inform ("\nPrint complete")
 } 
-verbose()
+
+if (INFORM_VERBOSE) verbose()
 
 debug("exiting...")
 brisk_exit()

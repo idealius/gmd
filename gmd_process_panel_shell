@@ -45,7 +45,7 @@ color2 FFA300
 color3 grey
 
 TEXT
-${execi 2 ~/.conky/gmd/./psfile.sh}
+${execi 2 ~/.conky/gmd/./gmdshell.sh}
 ${color2}CPU Average${color0}${alignr}${cpu cpu0}%
 ${cpubar cpu0 10,}
 ${execi 2 cat ./.pscpu | awk 'NR==1{print $1}'} $alignr ${execi 2 cat ./.pscpu | awk 'NR==1{print $2}'}%

@@ -4,5 +4,5 @@ cd ~
 pkill -f gmd_process_panel_shell
 pkill -f pscpu
 pkill -f psmem
-pkill -f psfile.sh
+pkill -f gmdshell.sh
 pkill -f consolidate.sh
