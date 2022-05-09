@@ -511,6 +511,7 @@ class data_fao {
             var cache_numeric_data = []
             this.fc.columns.forEach(function() { cache_numeric_data.push([]) } )
             // debug(cache_numeric_data.length + ' ' + cache_numeric_data + '..<-')
+            // We run one loop just to get the names and the first column.
             for (var i = 0; i < this.fc.columns[0].my_name_data.length; i ++) {
                 if (!marked_for_del[i]) {
                     cache_my_name_data.push(this.fc.columns[0].my_name_data[i])
@@ -519,7 +520,7 @@ class data_fao {
                         cache_numeric_data[c].push(this.fc.columns[c].numeric[i])
                     }
                 }
-            }
+            }//Take care of any left over columns:
             for (var c = 1; c < this.fc.columns.length; c++) {
                 for (var i = 0; i < this.fc.columns[0].my_name_data.length; i ++) {
                     if (!marked_for_del[i]) {
@@ -530,6 +531,7 @@ class data_fao {
             for (var c = 0; c < this.fc.columns.length; c++) {
                 this.fc.columns[c].numeric = cache_numeric_data[c]
                 // debug(cache_numeric_data[c])
+                
             }
             this.fc.columns[0].my_name_data = cache_my_name_data
             marked_for_label = cache_marked_label
@@ -603,6 +605,7 @@ class data_fao {
     // descend the array w/o restarting the loop
     my_sort = function () {
         //x debug(data_array.length)
+        var count = 0
         if (this.lonesrc) {
             var og_data = this.fc.columns[0].composite1 // this is merely for abbreviation purposes
             var done = false
@@ -615,6 +618,7 @@ class data_fao {
                     var mem_pos = i
                         
                     for (var k=i+1;k<comp_cache.length;k++) {
+                        count++
                         var next_seed = comp_cache[k][c+1]
                         if (next_seed > mem_cont) {
                             mem_cont = next_seed
@@ -631,7 +635,7 @@ class data_fao {
                     if (done) break
                 }
                 
-                debug("Shifts: " + shifts)
+                debug("Passes: " + count + " Shifts: " + shifts)
                 this.fc.columns[c].composite1 = deepCopy(comp_cache) // deepCopy is necessary here because if not col 1+ 
                                                                      // has no populated composite2's, yet are based 
                                                                      // on col 0's composite1 so refs get duped

@@ -1,0 +1,57 @@
+background no 
+double_buffer yes
+
+alignment top_right
+
+border_width 1
+default_color black
+default_outline_color white
+default_shade_color white
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+
+gap_x 130
+gap_y 130
+out_to_console no
+out_to_stderr no
+extra_newline no
+
+own_window yes
+own_window_type desktop
+own_window_transparent yes
+own_window_colour 2F2F2F
+own_window_class Conky
+own_window_argb_visual no
+own_window_argb_value 0
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+minimum_size 170 0
+stippled_borders 0
+update_interval 1.0
+uppercase no
+use_spacer none
+
+show_graph_scale no
+show_graph_range no
+
+use_xft yes
+xftalpha 0.1
+xftfont Droid Sans:size=8
+color0 white
+color1 EAEAEA
+color2 FFA300
+color3 grey
+
+# var my_str = "" //should be something like this.fc.columns[c].fieldname
+# for (var c = 0; c < this.fc.columns.length; c++) {
+#     for (var i = 0; i < this.fc.columns[0].my_name_data.length; i++) {
+#         var my_str += "${color0}columns[0].my_name_data[i] $alignr columns[c].my_numeric_data[i]"
+#     }
+#     my_str += '\n'
+# }
+
+TEXT
+${execi 2 sh -c '~/.conky/gmd/./gmd_shell_eval.sh'}
+${execpi 2 cat ~/.conky/gmd/.redeval}
