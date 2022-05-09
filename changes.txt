@@ -1,4 +1,10 @@
 
+
+awk script now shows process duplicate numbers in process name
+
+
+reverse order from here on out ^ v
+
 ::2:
 
 now handles failed file saves better. 
@@ -13,3 +19,18 @@ many, many more changes
 
 More logging occurs. Sort algo uses less memory and passes. Debug function active, but not set to save
 
+arguments and functionality now support 'ps' or 'top' output
+
+ps very properly supported, now, main cpu resource loops improved speed by about 200%
+
+verbose function now prints file name properly instead of undefined
+sped up the sort function slightly by removing a function call and improving code
+one source file option added and set to default: timed runtime improved by about 10-15%, user and sys cpu improved by 20-30%
+implemented an output mode for conky's ${eval} TEXT function that sped up the js by another 5% for CPU time alone.
+This process eliminated the 'sed' and 'cut' shell commands so now the cpu usage is now on par with the original awk shell
+script, overall -- one of the major goals of the project.
+
+
+implemented an 'eval' version of the awk script with sorting functions to reduce the need for outside help from shell programs,
+and means only need one 'ps' shell command to generate the conky script for its ${eval}. Running time on par with node script if
+one subtracts the time it takes to launch node

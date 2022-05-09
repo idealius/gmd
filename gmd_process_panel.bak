@@ -100,3 +100,94 @@ ${execi 5 cat ./psboth | sed -n '2,2p;3q' | cut -d' ' -f 1} $alignr ${execi 5 ca
 ${execi 5 cat ./psboth | sed -n '3,3p;4q' | cut -d' ' -f 1} $alignr ${execi 5 cat ./psboth | sed -n '3,3p;4q' | cut -d' ' -f 3} MB
 ${execi 5 cat ./psboth | sed -n '4,4p;5q' | cut -d' ' -f 1} $alignr ${execi 5 cat ./psboth | sed -n '4,4p;5q' | cut -d' ' -f 3} MB
 ${execi 5 cat ./psboth | sed -n '5,5p;6q' | cut -d' ' -f 1} $alignr ${execi 5 cat ./psboth | sed -n '5,5p;6q' | cut -d' ' -f 3} MB
+
+deprecated updates string process number labels on the fly, but it is probably slower than using a hash array
+ // debug("MY FLOAT " + my_float + " SET " + c + " INDEX " + i + " DAT " + this.fc.columns[c].numeric[i])
+                    //v This could be improved with a refactor for speed by using a hash
+                    //update the process name in the form of a trailing '(x)' where x is the number of duplicate processes
+                    //x console.log(this.fc.columns[c].my_name_data)
+                    
+                    // marked_for_label[c][i] = 0
+                    // marked_for_label[c][dupe.index]++
+                    // var length = this.fc.columns[c].my_name_data[dupe.index].length-1
+                    // var dupe_length = length
+                    // var name = this.fc.columns[c].my_name_data[dupe.index]
+                    // var close_bracket = false
+                    // var close_brk_pos = 0
+                    // var open_bracket = false
+                    // var open_brk_pos = 0
+                    // // v str level
+                    // // debug ("DUPE LENGTH:" + dupe_length +" DUPE INDEX:" + dupe.index)
+                    // while (dupe_length > -1) { 
+                        
+                    //     if (name[dupe_length] == ')' && !close_bracket) {
+                    //         close_bracket = true
+                    //         close_brk_pos = dupe_length
+                    //     }
+                    //     if (name[dupe_length] == '(' && !open_bracket && close_bracket) { //close_bracket here prevents ')(' detection
+                    //         open_bracket = true
+                    //         open_brk_pos = dupe_length
+                    //         break
+                    //     }
+                    //     dupe_length--
+                    // }
+                    // if (open_bracket) {            
+                    //     var my_int = parseInt(name.slice(open_brk_pos+1, close_brk_pos))
+                    //     my_int++
+                    //     // debug(":(" + my_int + ")")
+                    //     this.fc.columns[c].my_name_data[dupe.index] = name.slice(0, open_brk_pos+1) + my_int.toString() + name.slice(close_brk_pos)
+                    //     //x debug(name) //x
+                    //     // debug("Established dupe detected. Result:" + this.fc.columns[c].my_name_data[dupe.index])
+                    // }
+                    // else {
+                    //     this.fc.columns[c].my_name_data[dupe.index] += ":(2)"
+                    //     // debug("New dupe detected.")
+                    // }
+
+
+
+
+                        // if (search_str == "chrome") console.log("SUCCESS 3")
+        // v Not even sure this is needed anymore
+        //This double checks there's no '+' before the '('. This doesn't help for processes that have a '+' right
+        //there positionally alongside a duplicate process, but with a longer filename. However, it still
+        //takes care of the other edge case which is much more common - where the + is for long process filenames)
+        // if (a.result) {
+        //     var i = a.index 
+        //     var start_pos = array_str[i].length //str level
+        //     var parenth_pos = array_str[i].indexOf('(', i)
+        //     start_pos = (parenth_pos > 0) ? parenth_pos : start_pos
+        //     if (array_str[start_pos-1] == '+') a.result = false
+        // }
+        // if (search_str == "chrome" && a.result) console.log("SUCCESS 4 \n")
+
+                        // var tail = array_str[i].slice(search_str.length)
+                // // v Check that our tail doesn't have regular alpha-numeric chars besides our parentheses
+                // // compare against decimal unicode table, basically if it's anything but what we use to label dupe procs it dq's the dupe
+                // var tail_exception = false
+                // var ii = 0
+                // while (!tail_exception && ii < tail.length) {
+                //     var my_char = tail.charCodeAt(ii)
+                //     if (( my_char < 40) || 
+                //         (my_char > 42 && my_char < 47) || 
+                //         my_char > 59 ) {
+                            
+                //             tail_exception = true
+                //             //debug("TAIL EXCEPTION", tail, tail[ii], my_char) // I NEED to move to next iteration instead of returning
+                //             break
+
+                //     }
+                //     else ii++
+                // }
+                // // console.log ("TAIL: ", tail)
+                // if (!tail_exception) {
+                //     a.result = true
+                //     a.index = i
+                //     break
+                // }
+
+                // var columns1 = "COLUMNS_CACHE=$COLUMNS & COLUMNS=100 &"
+// var top_cmd = "top -b -n 1 > " + gmd_cache_path + 'tmp'
+// var columns2 = " & COLUMNS=$COLUMNS_CACHE"
+// shell.spawnSync('/bin/bash', ['-c \"top -b -n 1 > ' + gmd_cache_path +'\"']);
+// shell.exec('cp ' + gmd_cache_path + 'tmp ' + gmd_cache_path)
