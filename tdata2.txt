@@ -1,0 +1,9 @@
+chrome .1
+chrome .4
+chrome 1.2
+vivaldi .3
+code .3
+code .1
+vivaldi .2
+chrome .4
+vi 0.0

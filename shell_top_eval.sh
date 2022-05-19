@@ -13,12 +13,12 @@
         MAXLINES = 5
     }
 
-    NR > 1 { #Our classic awk loop is used to figure out which names are duplicates
-        seen_one[$3] += $1; #numeric sum, notice the $3, so this is more like array[fv] = fv instead of array[i] = fv
-        seen_two[$3] += $2;
+    NR > 7 { #Our classic awk loop is used to figure out which names are duplicates
+        seen_one[$12] += $9; #numeric sum, notice the $3, so this is more like array[fv] = fv instead of array[i] = fv
+        seen_two[$12] += $6;
     
-        # seen_two[$3] += $2
-        dupe[$3] ++     #duplicate process count per process
+        # seen_two[$12] += $2
+        dupe[$12] ++     #duplicate process count per process
     } 
     
     END { #now the fun begins

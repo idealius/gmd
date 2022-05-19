@@ -44,14 +44,7 @@ color1 EAEAEA
 color2 FFA300
 color3 grey
 
-# var my_str = "" //should be something like this.fc.columns[c].fieldname
-# for (var c = 0; c < this.fc.columns.length; c++) {
-#     for (var i = 0; i < this.fc.columns[0].my_name_data.length; i++) {
-#         var my_str += "${color0}columns[0].my_name_data[i] $alignr columns[c].my_numeric_data[i]"
-#     }
-#     my_str += '\n'
-# }
-
 TEXT
 ${execi 2 ~/.conky/gmd/./gmd.js ~/.conky/gmd/ -ps}
 ${execpi 2 cat ~/.conky/gmd/.redeval}
+${image ~/.config/conky/Saiph/res/bw_dark.png -p 1200,300 -s 230x710}

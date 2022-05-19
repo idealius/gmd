@@ -2,8 +2,7 @@ background no
 double_buffer yes
 
 alignment top_right
-maximum_width 330
-minimum_width 330
+
 border_width 1
 default_color black
 default_outline_color white
@@ -18,6 +17,7 @@ gap_y 130
 out_to_console no
 out_to_stderr no
 extra_newline no
+
 own_window yes
 own_window_type desktop
 own_window_transparent yes
@@ -29,7 +29,7 @@ own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 
 minimum_size 170 0
 stippled_borders 0
-update_interval 2.0
+update_interval 1.0
 uppercase no
 use_spacer none
 
@@ -44,15 +44,7 @@ color1 EAEAEA
 color2 FFA300
 color3 grey
 
-# var my_str = "" //should be something like this.fc.columns[c].fieldname
-# for (var c = 0; c < this.fc.columns.length; c++) {
-#     for (var i = 0; i < this.fc.columns[0].my_name_data.length; i++) {
-#         var my_str += "${color0}columns[0].my_name_data[i] $alignr columns[c].my_numeric_data[i]"
-#     }
-#     my_str += '\n'
-# }
-
 TEXT
-${execi 2 sh -c '~/.conky/gmd/./gmd_shell_eval.sh'}\
+${execi 2 ~/.conky/gmd/./gmd.js ~/.conky/gmd/ -top}
 ${execpi 2 cat ~/.conky/gmd/.redeval}
-${image ~/.config/conky/Saiph/res/bw_dark.png -p -10,-10 -s 800x800}\
+${image ~/.config/conky/Saiph/res/bw_dark.png -p 1200,300 -s 230x710}

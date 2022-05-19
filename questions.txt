@@ -1,0 +1,11 @@
+Questions
+
+What is a hash array marker, exactly?
+
+Programming strategies for faster code
+
+Why is shell so fast?
+
+Would node as a  service be faster using top as a service or atop?
+
+

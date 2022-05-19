@@ -31,6 +31,7 @@ This process eliminated the 'sed' and 'cut' shell commands so now the cpu usage 
 script, overall -- one of the major goals of the project.
 
 
-implemented an 'eval' version of the awk script with sorting functions to reduce the need for outside help from shell programs,
+"Implemented an 'eval' version of the awk script with sorting functions to reduce the need for outside help from shell programs,
 and means only need one 'ps' shell command to generate the conky script for its ${eval}. Running time on par with node script if
-one subtracts the time it takes to launch node
+one subtracts the time it takes to launch node. Many name changes. Many older scripts running off of top for example are untested
+and unoptimized."

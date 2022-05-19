@@ -29,7 +29,7 @@ own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 
 minimum_size 170 0
 stippled_borders 0
-update_interval 2.0
+update_interval 5.0
 uppercase no
 use_spacer none
 
@@ -53,6 +53,6 @@ color3 grey
 # }
 
 TEXT
-${execi 2 sh -c '~/.conky/gmd/./gmd_shell_eval.sh'}\
+${execi 2 sh -c '~/.conky/gmd/./gmd_shell_below_eval.sh'}\
 ${execpi 2 cat ~/.conky/gmd/.redeval}
 ${image ~/.config/conky/Saiph/res/bw_dark.png -p -10,-10 -s 800x800}\

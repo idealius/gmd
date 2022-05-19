@@ -1,237 +1,284 @@
-COMMAND           RSS
-systemd          7624
-kthreadd            0
-rcu_gp              0
-rcu_par_gp          0
-mm_percpu_wq        0
-ksoftirqd/0         0
-rcu_sched           0
-migration/0         0
-idle_inject/0       0
-cpuhp/0             0
-cpuhp/1             0
-idle_inject/1       0
-migration/1         0
-ksoftirqd/1         0
-kdevtmpfs           0
-netns               0
-rcu_tasks_kthre     0
-kauditd             0
-khungtaskd          0
-oom_reaper          0
-writeback           0
-kcompactd0          0
-ksmd                0
-khugepaged          0
-kintegrityd         0
-kblockd             0
-blkcg_punt_bio      0
-tpm_dev_wq          0
-ata_sff             0
-md                  0
-edac-poller         0
-devfreq_wq          0
-watchdogd           0
-kswapd0             0
-ecryptfs-kthrea     0
-kthrotld            0
-irq/24-pciehp       0
-irq/25-pciehp       0
-irq/26-pciehp       0
-irq/27-pciehp       0
-irq/28-pciehp       0
-acpi_thermal_pm     0
-scsi_eh_0           0
-scsi_tmf_0          0
-scsi_eh_1           0
-scsi_tmf_1          0
-vfio-irqfd-clea     0
-ipv6_addrconf       0
-kstrp               0
-charger_manager     0
-firewire            0
-scsi_eh_2           0
-scsi_tmf_2          0
-firewire_ohci       0
-scsi_eh_3           0
-scsi_tmf_3          0
-scsi_eh_4           0
-scsi_tmf_4          0
-ttm_swap            0
-uas                 0
-scsi_eh_5           0
-scsi_tmf_5          0
-jbd2/sda2-8         0
-ext4-rsv-conver     0
-systemd-journal 67616
-none              440
-ipmi-msghandler     0
-systemd-udevd    3156
-cfg80211            0
-kworker/u5:1-hc     0
-kworker/u5:2-hc     0
-systemd-resolve  4964
-systemd-timesyn  2616
-accounts-daemon  4764
-acpid             772
-avahi-daemon     3292
-bluetoothd       3740
-cron             2780
-dbus-daemon      5324
-NetworkManager   9372
-atopacctd          20
-irqbalance       3104
-networkd-dispat  6168
-polkitd          6940
-rsyslogd         3860
-smartd           3524
-systemd-logind   5360
-udisksd          6748
-wpa_supplicant   3812
-avahi-daemon      260
-colord           7732
-mpd              7764
-ModemManager     5100
-agetty           1628
-lightdm          3984
-sshd             3192
-irq/16-b43          0
-Xorg            45068
-python3          4476
-kerneloops       2320
-kerneloops       2248
-teamviewerd      3756
-uuidd             700
-lightdm          3336
-systemd          5116
-(sd-pam)           64
-pulseaudio       8924
-tracker-miner-f 260240
-cinnamon-sessio 10784
-dbus-daemon      4852
-rtkit-daemon     2400
-gvfsd            4328
-gvfsd-fuse       2468
-gvfs-udisks2-vo  4820
-gvfs-afc-volume  3944
-gvfs-goa-volume  3292
-goa-daemon       5704
-ssh-agent          36
-krfcommd            0
-goa-identity-se  3688
-gvfs-gphoto2-vo  4220
-gvfs-mtp-volume  2876
-upowerd          4988
-at-spi-bus-laun  3616
-dbus-daemon      3228
-at-spi2-registr  3496
-gnome-keyring-d  3748
-csd-wacom        7884
-csd-print-notif  9344
-csd-a11y-keyboa  8120
-csd-media-keys   9852
-csd-sound        8444
-csd-a11y-settin  7636
-csd-mouse        7448
-csd-orientation  7820
-csd-xsettings    8384
-csd-housekeepin  7660
-csd-keyboard     9344
-csd-cursor       7784
-csd-automount    8792
-csd-color        8888
-csd-clipboard    8016
-csd-xrandr       8184
-csd-power       10384
-csd-screensaver  7800
-csd-background   7488
-dconf-service    3804
-csd-printer      5916
-TeamViewer       9436
-cinnamon-launch  6892
-cinnamon        78244
-xapp-sn-watcher  7752
-blueberry-obex-  7596
-evolution-alarm  9188
-nemo-desktop    11748
-agent            2536
-nm-applet       10872
-cinnamon-killer  7092
-obexd            2000
-polkit-gnome-au  7136
-kdeconnectd      7012
-evolution-sourc  6560
-blueberry-tray  11084
-safechild         528
-rfkill            548
-evolution-calen  6256
-evolution-addre  6276
-mintUpdate      41772
-gvfsd-metadata   4304
-conky           10544
-conky            8732
-applet.py       10132
-mintreport-tray  9044
-gvfsd-trash      3880
-gvfsd-network    4972
-gvfsd-dnssd      4012
-falkon          258492
-QtWebEngineProc  5224
-QtWebEngineProc  3044
-tracker-store   28028
-xdg-desktop-por  6344
-xdg-document-po  3992
-xdg-permission-  2416
-fusermount       1868
-xdg-desktop-por  8528
-sh                464
-pxgsettings      3276
-tracker-extract  7668
-xed             56540
-code            80396
-code             7616
-code             7444
-code                4
-chrome_crashpad  1248
-code            31444
-code            19772
-code            261148
-code            79720
-code            56712
-code            16992
-code            16892
-code            46680
-code            87616
-code            14932
-login            3400
-bash             3352
-scanhdd.sh       3040
-sudo             3672
-tee               540
-badblocks        3064
-gnome-terminal- 26004
-bash             8860
-code            35008
-code            20568
-bash             8692
-atop            12200
-cupsd            6744
-cups-browsed     9360
-dbus             4748
-dbus             4992
-QtWebEngineProc 93568
-QtWebEngineProc 324040
-kworker/1:2H-kb     0
-kworker/1:0-eve     0
-kworker/0:1-eve     0
-kworker/u4:0-ph     0
-kworker/0:2H-kb     0
-kworker/u4:2-ev     0
-kworker/0:2-eve     0
-kworker/1:1-eve     0
-kworker/0:1H-ra     0
-kworker/1:0H-kb     0
-kworker/0:0H-kb     0
-kworker/1:1H-kb     0
-kworker/u4:1-ev     0
-ps               1144
+top - 14:49:33 up 23:43,  2 users,  load average: 2.10, 2.57, 2.13
+Tasks: 277 total,   1 running, 275 sleeping,   0 stopped,   1 zombie
+%Cpu(s):  9.1 us,  6.1 sy,  0.0 ni, 39.4 id, 45.5 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   3928.1 total,    407.3 free,   2521.5 used,    999.2 buff/cache
+MiB Swap:   2048.0 total,   1878.2 free,    169.8 used.   1002.4 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   1153 root      20   0  679304 122004  86228 S   6.2   3.0  17:54.55 Xorg
+ 273150 idealius  20   0  548016  41248  28532 S   6.2   1.0   0:25.33 gnome-terminal-
+ 447982 root      20   0       0      0      0 I   6.2   0.0   0:00.47 kworker/u4:2-phy0
+ 450461 idealius  20   0   12000   4020   3308 R   6.2   0.1   0:00.01 top
+      1 root      20   0  104036  10068   7072 S   0.0   0.3   0:04.55 systemd
+      2 root      20   0       0      0      0 S   0.0   0.0   0:00.03 kthreadd
+      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_gp
+      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_percpu_wq
+      9 root      20   0       0      0      0 S   0.0   0.0   0:04.50 ksoftirqd/0
+     10 root      20   0       0      0      0 I   0.0   0.0   1:05.25 rcu_sched
+     11 root      rt   0       0      0      0 S   0.0   0.0   0:01.23 migration/0
+     12 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 idle_inject/0
+     14 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/0
+     15 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/1
+     16 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 idle_inject/1
+     17 root      rt   0       0      0      0 S   0.0   0.0   0:01.52 migration/1
+     18 root      20   0       0      0      0 S   0.0   0.0   0:39.69 ksoftirqd/1
+     21 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kdevtmpfs
+     22 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns
+     23 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_kthre
+     24 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kauditd
+     25 root      20   0       0      0      0 S   0.0   0.0   0:00.09 khungtaskd
+     26 root      20   0       0      0      0 S   0.0   0.0   0:00.00 oom_reaper
+     27 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 writeback
+     28 root      20   0       0      0      0 S   0.0   0.0   0:01.97 kcompactd0
+     29 root      25   5       0      0      0 S   0.0   0.0   0:00.00 ksmd
+     30 root      39  19       0      0      0 S   0.0   0.0   0:00.00 khugepaged
+     77 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kintegrityd
+     78 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kblockd
+     79 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 blkcg_punt_bio
+     80 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 tpm_dev_wq
+     81 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 ata_sff
+     82 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 md
+     83 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 edac-poller
+     84 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 devfreq_wq
+     85 root      rt   0       0      0      0 S   0.0   0.0   0:00.00 watchdogd
+     87 root      20   0       0      0      0 S   0.0   0.0   0:07.67 kswapd0
+     88 root      20   0       0      0      0 S   0.0   0.0   0:00.00 ecryptfs-kthrea
+     90 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kthrotld
+     91 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 irq/24-pciehp
+     92 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 irq/25-pciehp
+     93 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 irq/26-pciehp
+     94 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 irq/27-pciehp
+     95 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 irq/28-pciehp
+     97 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 acpi_thermal_pm
+     98 root      20   0       0      0      0 S   0.0   0.0   0:00.00 scsi_eh_0
+     99 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 scsi_tmf_0
+    100 root      20   0       0      0      0 S   0.0   0.0   0:00.01 scsi_eh_1
+    101 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 scsi_tmf_1
+    103 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 vfio-irqfd-clea
+    110 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 ipv6_addrconf
+    119 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kstrp
+    122 root       0 -20       0      0      0 I   0.0   0.0   0:06.86 kworker/u5:0-hci0
+    138 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 charger_manager
+    182 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 firewire
+    183 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 firewire_ohci
+    185 root      20   0       0      0      0 S   0.0   0.0   0:00.00 scsi_eh_2
+    186 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 scsi_tmf_2
+    187 root      20   0       0      0      0 S   0.0   0.0   0:00.00 scsi_eh_3
+    188 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 scsi_tmf_3
+    189 root      20   0       0      0      0 S   0.0   0.0   0:00.00 scsi_eh_4
+    190 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 scsi_tmf_4
+    192 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 ttm_swap
+    196 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 uas
+    258 root      20   0       0      0      0 S   0.0   0.0   0:05.49 jbd2/sda2-8
+    259 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 ext4-rsv-conver
+    309 root      19  -1  168324  34640  33012 S   0.0   0.9   0:10.08 systemd-journal
+    344 root      20   0    2488    508    444 S   0.0   0.0   0:00.00 none
+    348 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 ipmi-msghandler
+    371 root       0 -20       0      0      0 S   0.0   0.0   0:00.07 loop0
+    373 root       0 -20       0      0      0 S   0.0   0.0   0:00.00 loop1
+    375 root       0 -20       0      0      0 S   0.0   0.0   0:00.00 loop2
+    377 root       0 -20       0      0      0 S   0.0   0.0   0:00.00 loop3
+    384 root       0 -20       0      0      0 S   0.0   0.0   0:00.00 loop4
+    386 root       0 -20       0      0      0 S   0.0   0.0   0:00.00 loop5
+    389 root       0 -20       0      0      0 S   0.0   0.0   0:00.00 loop6
+    392 root       0 -20       0      0      0 S   0.0   0.0   0:00.00 loop7
+    393 root      20   0   24752   7924   3680 S   0.0   0.2   0:05.34 systemd-udevd
+    480 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 cfg80211
+    513 root       0 -20       0      0      0 I   0.0   0.0   0:06.90 kworker/u5:2-hci0
+    800 systemd+  20   0   24124  11244   8092 S   0.0   0.3   0:21.44 systemd-resolve
+    801 systemd+  20   0   90316   5220   4432 S   0.0   0.1   0:00.31 systemd-timesyn
+    806 root      20   0  238424   7532   6448 S   0.0   0.2   0:03.70 accounts-daemon
+    807 root      20   0    2540    708    640 S   0.0   0.0   0:01.76 acpid
+    811 avahi     20   0    8524   3908   3384 S   0.0   0.1   0:05.37 avahi-daemon
+    812 root      20   0    8540   5084   4404 S   0.0   0.1   0:00.08 bluetoothd
+    814 message+  20   0    9068   6248   3908 S   0.0   0.2   0:35.59 dbus-daemon
+    815 root      20   0  336700  17824  13916 S   0.0   0.4   2:49.53 NetworkManager
+    820 root       0 -20    2500     72      0 S   0.0   0.0   0:19.74 atopacctd
+    826 root      20   0   81824   3560   3256 S   0.0   0.1   0:06.03 irqbalance
+    841 root      20   0   39928  15868  10100 S   0.0   0.4   0:00.12 networkd-dispat
+    843 root      20   0  241392  11452   7088 S   0.0   0.3   0:03.58 polkitd
+    847 root      20   0   10800   5616   4464 S   0.0   0.1   0:00.06 smartd
+    848 root      20   0  873480  20680   6340 S   0.0   0.5   0:09.06 snapd
+    849 root      20   0   16744   7564   6472 S   0.0   0.2   0:00.70 systemd-logind
+    852 root      20   0  392768  11868   9104 S   0.0   0.3   0:11.92 udisksd
+    853 root      20   0   14072   6580   5448 S   0.0   0.2   0:00.79 wpa_supplicant
+    860 avahi     20   0    8340    324      0 S   0.0   0.0   0:00.00 avahi-daemon
+    926 mpd       20   0  255500  28316  22468 S   0.0   0.7   0:00.24 mpd
+    932 root      20   0  240724   7976   6440 S   0.0   0.2   0:00.07 ModemManager
+    960 root      20   0   12172   5848   5004 S   0.0   0.1   0:00.01 sshd
+    968 root     -51   0       0      0      0 S   0.0   0.0   5:19.19 irq/16-b43
+   1032 root      20   0   32180  14824   6824 S   0.0   0.4   0:19.45 python3
+   1034 root      20   0    9412   2976   2708 S   0.0   0.1   0:00.18 cron
+   1079 root      20   0  305872   6484   5840 S   0.0   0.2   0:00.36 lightdm
+   1080 kernoops  20   0   11252   2488   2016 S   0.0   0.1   0:07.48 kerneloops
+   1084 kernoops  20   0   11252   2564   2092 S   0.0   0.1   0:07.46 kerneloops
+   1088 root      20   0    8428   1904   1788 S   0.0   0.0   0:00.00 agetty
+   1121 root      20   0  864592   5516   4980 S   0.0   0.1   2:07.26 teamviewerd
+   1140 colord    20   0  246388  13640   8380 S   0.0   0.3   0:00.22 colord
+   1141 uuidd     20   0   10592    968    796 S   0.0   0.0   0:00.07 uuidd
+   1178 root      20   0  162076   6420   6012 S   0.0   0.2   0:00.04 lightdm
+   1183 idealius  20   0   18700   7860   6828 S   0.0   0.2   0:03.78 systemd
+   1184 idealius  20   0  105464   2540      0 S   0.0   0.1   0:00.00 (sd-pam)
+   1191 idealius   9 -11 2007260  16032  13148 S   0.0   0.4   1:41.69 pulseaudio
+   1193 idealius  39  19 1118688  24316  14648 S   0.0   0.6   0:15.30 tracker-miner-f
+   1194 idealius  20   0  653952  34000  30740 S   0.0   0.8   0:02.02 cinnamon-sessio
+   1197 rtkit     21   1  152928   2960   2720 S   0.0   0.1   0:01.11 rtkit-daemon
+   1200 idealius  20   0    8600   5336   3704 S   0.0   0.1   0:10.64 dbus-daemon
+   1218 idealius  20   0  239820   6844   6200 S   0.0   0.2   0:01.17 gvfsd
+   1251 idealius  20   0  378336   5244   5244 S   0.0   0.1   0:00.00 gvfsd-fuse
+   1279 idealius  20   0  388960   8504   7416 S   0.0   0.2   0:02.73 gvfs-udisks2-vo
+   1293 idealius  20   0  316716   7652   7212 S   0.0   0.2   0:03.85 gvfs-afc-volume
+   1308 idealius  20   0  235872   5800   5304 S   0.0   0.1   0:00.67 gvfs-goa-volume
+   1309 idealius  20   0    6032     40      0 S   0.0   0.0   0:00.40 ssh-agent
+   1321 idealius  20   0  549536  18088  16508 S   0.0   0.4   0:00.14 goa-daemon
+   1324 root      10 -10       0      0      0 S   0.0   0.0   0:00.00 krfcommd
+   1340 idealius  20   0  314616   7676   6632 S   0.0   0.2   0:00.17 goa-identity-se
+   1342 idealius  20   0  238220   7084   6108 S   0.0   0.2   0:00.67 gvfs-gphoto2-vo
+   1350 idealius  20   0  235816   5528   4884 S   0.0   0.1   0:00.68 gvfs-mtp-volume
+   1355 root      20   0  252376   9492   7980 S   0.0   0.2   0:00.57 upowerd
+   1370 idealius  20   0  305760   6732   6068 S   0.0   0.2   0:00.00 at-spi-bus-laun
+   1375 idealius  20   0    7632   4380   3640 S   0.0   0.1   0:00.80 dbus-daemon
+   1380 idealius  20   0  162824   7516   6748 S   0.0   0.2   0:01.31 at-spi2-registr
+   1430 idealius  20   0  387640   6060   5216 S   0.0   0.2   0:01.12 gnome-keyring-d
+   1442 idealius  20   0  453792  27344  21124 S   0.0   0.7   0:02.70 csd-power
+   1443 idealius  20   0  301756  22216  17064 S   0.0   0.6   0:00.35 csd-screensaver
+   1451 idealius  20   0  311092  25652  19736 S   0.0   0.6   0:00.40 csd-print-notif
+   1452 idealius  20   0  315236  22868  17672 S   0.0   0.6   0:00.36 csd-wacom
+   1459 idealius  20   0  302248  22596  17272 S   0.0   0.6   0:00.36 csd-a11y-keyboa
+   1463 idealius  20   0  718656  25624  19576 S   0.0   0.6   0:00.76 csd-media-keys
+   1466 idealius  20   0  382048  23616  18308 S   0.0   0.6   0:02.09 csd-sound
+   1467 idealius  20   0  303148  22552  17512 S   0.0   0.6   0:00.35 csd-a11y-settin
+   1472 idealius  20   0  303168  22568  17352 S   0.0   0.6   0:00.36 csd-mouse
+   1475 idealius  20   0  450600  22660  17492 S   0.0   0.6   0:00.36 csd-orientation
+   1479 idealius  20   0  304860  24260  18656 S   0.0   0.6   0:00.50 csd-xsettings
+   1486 idealius  20   0  303172  20052  17220 S   0.0   0.5   0:06.14 csd-housekeepin
+   1490 idealius  20   0  302220  23568  17552 S   0.0   0.6   0:02.32 csd-keyboard
+   1491 idealius  20   0  228888  22144  16984 S   0.0   0.6   0:00.36 csd-cursor
+   1496 idealius  20   0  377160  23332  17856 S   0.0   0.6   0:00.42 csd-automount
+   1499 idealius  20   0  526236  24108  18436 S   0.0   0.6   0:00.39 csd-color
+   1502 idealius  20   0  409472  68600  23768 S   0.0   1.7   0:30.37 csd-background
+   1506 idealius  20   0  377852  23240  17916 S   0.0   0.6   0:00.40 csd-xrandr
+   1509 idealius  20   0  228896  22652  17336 S   0.0   0.6   0:00.35 csd-clipboard
+   1530 idealius  20   0  156684   6156   4968 S   0.0   0.2   0:00.64 dconf-service
+   1534 idealius  20   0  342164  13260  12848 S   0.0   0.3   0:00.04 csd-printer
+   1588 idealius  20   0 1488720  48884  25100 S   0.0   1.2   1:14.91 TeamViewer
+   1627 idealius  20   0  386620  21236  20576 S   0.0   0.5   0:00.27 cinnamon-launch
+   1631 idealius  20   0 4312504 156924  55504 S   0.0   3.9  12:29.18 cinnamon
+   1647 idealius  20   0  376484  24880  16076 S   0.0   0.6   0:01.17 xapp-sn-watcher
+   1660 idealius  20   0  343788  25668  18916 S   0.0   0.6   0:12.80 kdeconnectd
+   1677 idealius  20   0  477392  45908  26000 S   0.0   1.1   0:04.16 nemo-desktop
+   1682 idealius  20   0  313556  32604  20472 S   0.0   0.8   0:00.27 blueberry-obex-
+   1701 idealius  20   0  713360  38476  24132 S   0.0   1.0   0:00.47 evolution-alarm
+   1708 idealius  20   0  388776  33880  23552 S   0.0   0.8   1:02.72 nm-applet
+   1710 idealius  20   0  236888   4768   4320 S   0.0   0.1   0:00.00 agent
+   1713 idealius  20   0  311128  30560  20288 S   0.0   0.8   0:00.24 cinnamon-killer
+   1724 idealius  20   0  318244  34844  24728 S   0.0   0.9   0:00.45 polkit-gnome-au
+   1729 idealius  20   0   43984   4828   4204 S   0.0   0.1   0:00.00 obexd
+   1789 idealius  20   0  939300  19300  15500 S   0.0   0.5   0:00.09 evolution-sourc
+   1802 idealius  20   0  568060  60772  33300 S   0.0   1.5   0:00.61 blueberry-tray
+   1809 idealius  20   0    2608    532    464 S   0.0   0.0   0:00.00 safechild
+   1810 idealius  20   0    8344    620    536 S   0.0   0.0   0:00.00 rfkill
+   1814 idealius  20   0  920816  19480  15508 S   0.0   0.5   0:00.19 evolution-calen
+   1829 idealius  20   0  673392  19196  15728 S   0.0   0.5   0:00.12 evolution-addre
+   1852 idealius  20   0  262148  21876  12980 S   0.0   0.5   0:00.66 cinnamon-slides
+   1868 idealius  20   0  162488   6468   5640 S   0.0   0.2   0:00.87 gvfsd-metadata
+   2009 idealius  20   0 1156436  21056  13520 S   0.0   0.5  11:24.94 conky
+   2010 idealius  20   0   46812  19420  13452 S   0.0   0.5   5:15.56 conky
+   2101 idealius  20   0  726644  62984  32080 S   0.0   1.6   0:00.85 mintUpdate
+   2102 idealius  20   0   59660  32452  16028 S   0.0   0.8   0:03.34 applet.py
+   2196 idealius  20   0  406188  46068  24136 S   0.0   1.1   0:01.09 mintreport-tray
+   2417 idealius  20   0  313840   7188   6160 S   0.0   0.2   0:00.09 gvfsd-trash
+  16753 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 cifsiod
+  16754 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 smb3decryptd
+  16755 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 cifsfileinfoput
+  16756 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 cifsoplockd
+  16760 root      20   0       0      0      0 S   0.0   0.0   0:05.84 cifsd
+  17258 idealius  20   0  388036   8316   7132 S   0.0   0.2   0:00.08 gvfsd-network
+  17274 idealius  20   0  314976   7796   6844 S   0.0   0.2   0:00.07 gvfsd-dnssd
+  26134 idealius  20   0  613272  11172   9200 S   0.0   0.3   0:03.37 xdg-desktop-por
+  26138 idealius  20   0  531160   5712   5124 S   0.0   0.1   0:01.10 xdg-document-po
+  26157 idealius  20   0  235588   4392   3956 S   0.0   0.1   0:00.00 xdg-permission-
+  26168 root      20   0    2592   1816   1708 S   0.0   0.0   0:00.00 fusermount
+  26173 idealius  20   0  525472  28028  18864 S   0.0   0.7   0:00.38 xdg-desktop-por
+  26201 idealius  20   0    2608    536    464 S   0.0   0.0   0:00.00 sh
+  26202 idealius  20   0  233668   6672   6172 S   0.0   0.2   0:00.00 pxgsettings
+ 165082 root       0 -20   20664  19916   4320 S   0.0   0.5   0:42.95 atop
+ 165114 root      20   0   29052   8520   6392 S   0.0   0.2   0:00.05 cupsd
+ 165115 root      20   0  179276  12432   9972 S   0.0   0.3   0:00.16 cups-browsed
+ 165190 lp        20   0   15324   6160   5364 S   0.0   0.2   0:00.00 dbus
+ 165191 lp        20   0   15324   6112   5316 S   0.0   0.2   0:00.00 dbus
+ 273157 idealius  20   0   14568   9072   3728 S   0.0   0.2   0:00.14 bash
+ 274299 syslog    20   0  224344   4040   3308 S   0.0   0.1   0:01.89 rsyslogd
+ 281804 idealius  20   0 1010052  85172  32760 S   0.0   2.1   0:21.73 xed
+ 315304 root      20   0       0      0      0 S   0.0   0.0   0:00.48 scsi_eh_5
+ 315306 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 scsi_tmf_5
+ 315456 root      20   0    8104   4600   3644 S   0.0   0.1   0:00.03 login
+ 315496 idealius  20   0   10864   5160   3580 S   0.0   0.1   0:00.03 bash
+ 315698 idealius  20   0    9624   3548   3144 S   0.0   0.1   0:00.00 scanhdd.sh
+ 315700 root      20   0   14020   5200   4320 S   0.0   0.1   0:00.00 sudo
+ 315701 idealius  20   0    8088    508    444 S   0.0   0.0   0:00.04 tee
+ 315760 root      20   0    9196   2824   2608 D   0.0   0.1   0:00.28 badblocks
+ 329650 idealius  20   0   16.5g 176700  86652 S   0.0   4.4   1:24.31 vivaldi-bin
+ 329654 idealius  20   0   15288   1016    764 S   0.0   0.0   0:00.00 cat
+ 329655 idealius  20   0   15288   1184    936 S   0.0   0.0   0:00.00 cat
+ 329666 idealius  20   0   16.0g   2044   1692 S   0.0   0.1   0:00.00 chrome_crashpad
+ 329668 idealius  20   0   16.0g   2492   2092 S   0.0   0.1   0:00.00 chrome_crashpad
+ 329672 idealius  20   0   16.3g  31956  21184 S   0.0   0.8   0:00.03 vivaldi-bin
+ 329673 idealius  20   0   16.3g  31816  21048 S   0.0   0.8   0:00.03 vivaldi-bin
+ 329675 idealius  20   0   16.3g  15156   4280 S   0.0   0.4   0:00.08 vivaldi-bin
+ 329713 idealius  20   0   16.5g 139292  61172 S   0.0   3.5   2:25.71 vivaldi-bin
+ 329718 idealius  20   0   16.3g  55600  37692 S   0.0   1.4   0:33.81 vivaldi-bin
+ 329746 idealius  20   0   16.3g  34728  19028 S   0.0   0.9   0:01.16 vivaldi-bin
+ 329765 idealius  20   0   32.5g 172984  83992 S   0.0   4.3   1:37.60 vivaldi-bin
+ 330102 idealius  20   0   16.6g  37652  26444 S   0.0   0.9   0:04.00 vivaldi-bin
+ 359554 idealius  20   0 2098556 403372 116160 S   0.0  10.0   3:34.89 python3
+ 359603 idealius  20   0    2608    536    464 S   0.0   0.0   0:00.00 sh
+ 359604 idealius  20   0  233668   6876   6376 S   0.0   0.2   0:00.00 pxgsettings
+ 359993 idealius  20   0       0      0      0 Z   0.0   0.0   0:00.00 blueberry
+ 380114 root       0 -20       0      0      0 I   0.0   0.0   0:01.23 kworker/1:1H-radeon-crtc
+ 428965 root      20   0       0      0      0 I   0.0   0.0   0:03.62 kworker/u4:3-phy0
+ 436932 idealius  20   0   28.5g 153420  84464 S   0.0   3.8   0:07.58 vivaldi-bin
+ 437960 idealius  20   0  257760  40748  35044 S   0.0   1.0   0:00.23 kwalletd5
+ 438048 root      20   0    7172   2068   1632 S   0.0   0.1   0:00.00 dbus-launch
+ 438051 root      20   0    7212   3184   2740 S   0.0   0.1   0:00.00 dbus-daemon
+ 438053 root      20   0  239396  25592  22736 S   0.0   0.6   0:00.11 kwalletd5
+ 438057 root      20   0  240020   8308   7476 S   0.0   0.2   0:00.01 gnome-keyring-d
+ 438262 idealius  20   0   24.5g  75376  59512 S   0.0   1.9   0:00.09 vivaldi-bin
+ 438263 root      20   0       0      0      0 I   0.0   0.0   0:01.58 kworker/1:1-events
+ 439751 idealius  20   0   24.5g 132864  81708 S   0.0   3.3   0:03.14 vivaldi-bin
+ 439906 idealius  20   0   28.5g 126784  82676 S   0.0   3.2   0:05.62 vivaldi-bin
+ 439963 root       0 -20       0      0      0 I   0.0   0.0   0:00.18 kworker/0:1H-kblockd
+ 440762 idealius  20   0   24.5g 123412  82884 S   0.0   3.1   0:03.68 vivaldi-bin
+ 440807 idealius  20   0   24.5g  47820  34172 S   0.0   1.2   0:00.04 vivaldi-bin
+ 444709 root      20   0       0      0      0 I   0.0   0.0   0:00.74 kworker/u4:1-phy0
+ 446843 root      20   0       0      0      0 I   0.0   0.0   0:00.14 kworker/1:0-events
+ 446879 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/1:2H-kblockd
+ 446974 root      20   0       0      0      0 I   0.0   0.0   0:00.39 kworker/0:0-events
+ 447372 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/0:3-events
+ 448186 root       0 -20       0      0      0 I   0.0   0.0   0:00.15 kworker/0:2H-kblockd
+ 448947 idealius  20   0   20.5g 160936 111692 S   0.0   4.0   0:10.13 code
+ 448950 idealius  20   0   16.2g  42872  35548 S   0.0   1.1   0:00.02 code
+ 448951 idealius  20   0   16.2g  43220  35908 S   0.0   1.1   0:00.02 code
+ 448962 idealius  20   0   16.2g   7360      8 S   0.0   0.2   0:00.00 code
+ 448984 idealius  20   0   16.0g   2964   2744 S   0.0   0.1   0:00.00 chrome_crashpad
+ 449001 idealius  20   0   16.4g 107980  86244 S   0.0   2.7   0:07.02 code
+ 449021 idealius  20   0   16.2g  59528  51184 S   0.0   1.5   0:02.50 code
+ 449054 idealius  20   0   42.4g 376032 135188 S   0.0   9.3   0:50.47 code
+ 449105 idealius  20   0   28.3g 134636  94300 S   0.0   3.3   0:17.66 code
+ 449138 idealius  20   0   20.3g  68504  54024 S   0.0   1.7   0:00.31 code
+ 449152 idealius  20   0   14568   8928   3588 S   0.0   0.2   0:00.05 bash
+ 449620 idealius  20   0   20.3g 121960  61156 S   0.0   3.0   0:03.33 code
+ 449632 idealius  20   0   20.3g  68052  54600 S   0.0   1.7   0:00.34 code
+ 449753 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/1:0H-kblockd
+ 449873 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/0:1-events
+ 449894 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/0:2-cgroup_destroy
+ 449895 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/1:2-events
+ 449896 root      20   0       0      0      0 I   0.0   0.0   0:00.00 kworker/1:3-events
+ 450002 idealius  20   0   20.2g 113164  55920 S   0.0   2.8   0:03.19 code
+ 450003 idealius  20   0   20.3g 153280  54276 S   0.0   3.8   0:05.27 code
+ 450021 idealius  20   0   20.3g  85920  54072 S   0.0   2.1   0:00.61 code
+ 450041 idealius  20   0   14568   8868   3528 S   0.0   0.2   0:00.05 bash
+ 450377 root       0 -20       0      0      0 I   0.0   0.0   0:00.01 kworker/0:0H-radeon-crtc
+ 450436 idealius  20   0  435056  27216  15128 S   0.0   0.7   0:00.16 tracker-store
+ 450443 idealius  39  19 1215432  35840  24200 S   0.0   0.9   0:00.16 tracker-extract

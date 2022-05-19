@@ -1,0 +1,15 @@
+go through list
+find column value, add to row in question
+go through list up to this row, first duplicate name, add to its column values, then mark original row in question's entire row for deletion
+update the parentheses e.g. ':(2) to :(3)'
+otherwise no duplicate? mark okay
+
+keep track of index of chosen 'original', keep track of number of duplicates
+
+data[col][i].index
+data[col][i].num
+
+mark all other duplicates for deletion
+
+loop through and make composite line at the same time
+

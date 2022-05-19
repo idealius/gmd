@@ -3,7 +3,8 @@
 # No process labels or self sort, but here is an awk one-liner that does collapse duplicate processes:
 # awk '{ seen[$1] += $2; dupe[$1] ++ } END { for (i in seen) { if (dupe[i] < 2) { print i, seen[i] } else { print i (":(") dupe[i] (")"), seen[i] } } }'
 
-# Full featured shell script, Leo Idler 5/9/2022
+# AWK script for Linux Rust program "below" which is a system resource monitor like top (except "below" is faster for this.)
+# Leo Idler 5/9/2022
 # Notes: may want to switch sorting algo so we can bail out early during the sort.
  awk '
     NR == 1 { #header
@@ -13,7 +14,7 @@
         MAXLINES = 5
     }
 
-    NR > 1 { #Our classic awk loop is used to figure out which names are duplicates
+    NR > 0 { #Our classic awk loop is used to figure out which names are duplicates this number is skipping the column headers
         seen_one[$3] += $1; #numeric sum, notice the $3, so this is more like array[fv] = fv instead of array[i] = fv
         seen_two[$3] += $2;
     
@@ -25,8 +26,8 @@
         row = 0
         # for (k=1; k<=NF; k++) print column[k] #field/column labels
         for (f in seen_one) {
-            col_one[row] = seen_one[f]
-            col_two[row] = sprintf("%12.2f", seen_two[f] / 1000) #sprintf for the decimal precision after we convert to MB
+            col_one[row] = sprintf("%3.2f", seen_one[f]) #sprintf for the decimal precision
+            col_two[row] = sprintf("%12.2f", seen_two[f] / 1000000) #sprintf for the decimal precision after we convert to MB, right-click procmons column headers for resident size for comparison
 
             if (dupe[f] < 2) {
                 # my_arr[row] = f " " flds[1]

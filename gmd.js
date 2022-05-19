@@ -109,12 +109,6 @@ var my_read_file = function(filename, retries) {
     return data
 }
 
-var copy_file = function(src, dest, retries) { //x deprecated
-    //yes, I know about fs.copyFile(src, dest[, mode], callback), but this already has retries ready to go
-    var data = my_read_file(src, retries)
-    my_write_file(dest, data, retries)
-}
-
 var brisk_exit = function(err) {
     // myfile.writeFileSync("gmd_err.log", error_log)
     if (DEBUG_MODE) {
@@ -590,19 +584,11 @@ class data_fao {
         }
     }
 
-    
-   
-    // array_swap_element = function(arr, fromIndex, toIndex) { //deprecated
-    //     var toIndex_cache = arr[toIndex]
-    //     var fromIndex_cache = arr[fromIndex]
-    //     arr[fromIndex] = toIndex_cache
-    //     arr[toIndex] = fromIndex_cache //x I need to look at this algo all over again because my_arr = modify_arr_func(my_arr) appears to work when I use node shell
-    //     return arr
-    // }
-
     // Sort lists descending from the top-to-bottom by second column
-    // Basically, we're looking for the biggest number larger than us to swap as we
-    // descend the array w/o restarting the loop
+    // Basically, we're just finding the largest value and swapping it
+    // from top to bottom. The nice thing is we can exit this sort early
+    // if we get our MAXLINES early, so something like this might be optimal
+    // for short lists from large ones.
     my_sort = function () {
         //x debug(data_array.length)
         var count = 0
@@ -671,7 +657,7 @@ class data_fao {
         }
     }
 
-    col_len() {
+    col_len() {//helper function to establish column length for either one or two file src preference
         return (MAX_LINES > this.fc.columns[0].my_name_data.length) ? this.fc.columns[0].my_name_data.length : MAX_LINES
     }
 
@@ -767,8 +753,9 @@ class data_fao {
 
     //UTILITARY FUNCTION END
     
-    //This is what our data structure looks like inside our class:
-    //Not 100% required, but it's useful to look at and use in the constructor as a target location
+    // This is what our data structure looks like inside our class:
+    // Not 100% required, but it's useful to look at and use in the constructor as a target location
+    // Might save some initialization time by commenting out and replacing with 'fc = null,'
     fc = { // fc = file collection
         srcfiles:[""],
         lonesrce:false, //file src
@@ -784,15 +771,9 @@ class data_fao {
         } ]
     }
 
-    // src_len(){
-    //     if (this.lonesrc) return 1
-    //     else return this.fc.srcfiles.length
-    // }
-
     constructor(lonesrc, fc) {
-        this.fc = fc //? needed?
+        this.fc = fc 
         this.lonesrc = lonesrc
-        // this.fc = deepCopy(fc) //? needed?
         debug(4)
         var f = 0
         // debug(this.fc.srcfiles.length)
@@ -847,12 +828,34 @@ debug(3)
 debug(file_collection)
 
 if (FILE_SOURCE == "top") {
-    var my_job = new data_fao(FILE_SRC_BOOL, {
-        srcfiles: file_collection,
-        columns: [ {col_num:6, conversion:function(el) {return decimal_round(el / 1000, 2)}, dest: destdir + ".redmem"},
-                   {col_num:9, conversion:null,                                              dest: destdir + ".redcpu"},
-        ] 
-    })
+    if (FILE_SRC_BOOL) {
+        var my_job = new data_fao(FILE_SRC_BOOL, {
+            srcfiles: file_collection,
+            columns: [ {col_num:1, conversion:null,
+                        dest: destdir + ".redcpu" ,
+                        fieldname: "Average CPU",
+                        label: "%",
+                        bar: true,
+                        bar_lua_func: function(str) {return "${color white}" + str + "${color EAEAEA}${alignr}${cpu cpu0}%\n${cpubar cpu0 10,}\n"} },
+                        
+                        {col_num:0, conversion:function(num) {return decimal_round(num / 1000, 2)},
+                        dest: destdir + ".redmem" ,
+                        fieldname: "RAM",
+                        label: " MB",
+                        bar: true,
+                        bar_lua_func: function(str) {return "${color white}" + str + "${color EAEAEA}${alignr}${mem}\n${membar 10,}\n"} },
+                       
+                ] 
+        })
+    }
+    else {
+        var my_job = new data_fao(FILE_SRC_BOOL, {
+            srcfiles: file_collection,
+            columns: [ {col_num:6, conversion:function(el) {return decimal_round(el / 1000, 2)}, dest: destdir + ".redmem"},
+                    {col_num:9, conversion:null,                                              dest: destdir + ".redcpu"},
+            ] 
+        })
+    }
 }
 else { //or ps
 
@@ -902,12 +905,7 @@ debug(9)
 my_job.save_conky(destdir + ".redeval")
 // my_job.save_all()
 
-
-
-
-
-
-//Print output
+/Print output
 if (mode != 1) {
     my_job.print_all()
 }
