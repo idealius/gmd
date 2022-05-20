@@ -1,0 +1,16 @@
+atop -w /var/tmp/atop.raw 5 60 #REQUIRED format is: "every 5 seconds for a total of 60"
+myvar=$(date +"%T"); atop -w /var/tmp/atop.raw 5 60
+
+atop -PPRG -r /var/tmp/atop.raw #REQUIRED there are other -P combinations in the man... The ones that start with "For every process one line is shown." seem the most promising.
+
+clear && atop -PPRC -r /var/tmp/atop.raw -b $(date +"%T") && atop -PPRM -r /var/tmp/atop.raw -b $(date +"%T")
+
+Sadly it prints out the whole last minute up until now. So, not only do we have to pick out columns and rows for processes, we have to seek the times right before EOF.
+
+There's also 'atopsar' but it seems to return only the top 3 processes for CPU, RAM, DISK, etc.
+
+nmon
+xtop
+collectl
+research giving up time in loops to the os for different langs
+

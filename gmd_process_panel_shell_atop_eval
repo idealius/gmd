@@ -53,6 +53,6 @@ color3 grey
 # }
 
 TEXT
-${execi 5 sh -c '~/.conky/gmd/./gmd_shell_below_eval.sh'}\
+${execi 5 sh -c '~/.conky/gmd/./gmd_shell_atop_eval.sh'}\
 ${execpi 5 cat ~/.conky/gmd/.redeval}
 ${image ~/.config/conky/Saiph/res/bw_dark.png -p -10,-10 -s 800x800}\

@@ -7,19 +7,15 @@
 # Leo Idler 5/9/2022
 # Notes: may want to switch sorting algo so we can bail out early during the sort.
  awk '
-    NR == 1 { #header
-        # for (k=1; k<=NF; k++) column[k] = $k 
+    BEGIN { #header
         column[1] = "CPU Average"
-        column[2] = "RAM Memory"
         MAXLINES = 5
+        MAXLINES --
     }
 
     NR > 0 { #Our classic awk loop is used to figure out which names are duplicates this number is skipping the column headers
-        seen_one[$3] += $1; #numeric sum, notice the $3, so this is more like array[fv] = fv instead of array[i] = fv
-        seen_two[$3] += $2;
-    
-        # seen_two[$3] += $2
-        dupe[$3] ++     #duplicate process count per process
+        seen_one[$1] += $2; #numeric sum, notice the $3, so this is more like array[fv] = fv instead of array[i] = fv
+        dupe[$1] ++     #duplicate process count per process
     } 
     
     END { #now the fun begins
@@ -27,35 +23,18 @@
         # for (k=1; k<=NF; k++) print column[k] #field/column labels
         for (f in seen_one) {
             col_one[row] = sprintf("%3.1f", seen_one[f]) #sprintf for the decimal precision
-            col_two[row] = sprintf("%12.2f", seen_two[f] / 1000000) #sprintf for the decimal precision after we convert to MB, right-click procmons column headers for resident size for comparison
-
+         
             if (dupe[f] < 2) {
-                # my_arr[row] = f " " flds[1]
                 col_name[row] = f
-                col_name_clone[row] = f
-                # my_arr_clone[row] = my_arr[row]   #we need a matching array of full rows for each sort later which is done by the column
             }
             else {
                 col_name[row] = f (":(") dupe[f] (")")
-                col_name_clone[row] = col_name[row]
-                # my_arr[row] =  col_name[row] " " flds[2]
-                # my_arr_clone[row] = my_arr[row]
             }
             row ++
         }
         if (row > 0) row --
 
-
-        # for (i=row;i>=0;i--) {
-        #     print col_name[i], col_one[i], col_two[i]
-        # }
-        # print "\n"
         qsort(col_one, 0, row, col_name)
-        qsort(col_two, 0, row, col_name_clone)
-
-        # for (i=row;i>=0;i--) {
-        #     print col_name[i], col_one[i], col_two[i]
-        # }
 
         my_output[0]="${color white}" column[1] "${color EAEAEA}${alignr}${cpu cpu0}%\n${cpubar cpu0 10,}"
         
@@ -67,18 +46,10 @@
             my_output[k] = col_name[i] " $alignr " col_one[i] "%"
             k++
         }
-        my_output[k] = "\n${color white}" column[2] "${color EAEAEA}${alignr}${mem}\n${membar 10,}"
-        k++
-
-        for (i=row;i>=stop;i--) {
-            my_output[k] = col_name_clone[i] " $alignr " col_two[i] " MB"
-            k++
-        }
 
         #.redeval
-        for (i=0;i<arr_len(my_output);i++) {
+        for (i=0;i<k;i++) {
             print my_output[i] > "/var/tmp/.redeval"
-            # print my_output[i] > "/var/tmp/.redeval"
         }
     }
     
