@@ -16,7 +16,7 @@ A cropped version of it running on the Desktop looks like this:
 
 This project allowed me to gain experience with nodejs on the Linux command line, writing code to improve execution speed, considerations about different sorting methods, and gain familiarity with some of the Linux base code.
 
-I also wrote it because I have 2008 iMac I wanted to repurpose running LinuxMint, resource monitoring is very useful for making sure it is running smoothly, and there seemed to be a gap in a Linux Desktop process-monitoring-widget space that groups same name processes for popular apps that make extensive use of separate processes like Microsoft's VSCode.
+I also wrote it because I have 2008 iMac I wanted to repurpose running LinuxMint, resource monitoring is very useful for making sure it is running smoothly, and there seemed to be a gap in a Linux Desktop process-monitoring-widget space which groups or "collapses" same name processes for popular apps that make extensive use of separate processes like Microsoft's VSCode.
 
 It also was made to have:
 
