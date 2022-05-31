@@ -11,7 +11,7 @@ Linux Desktop Conky process resource monitoring desktop panel with cpu (%) and m
 
 A cropped version of it running on the Desktop looks like this:
 
-![Output sample](https://github.com/idealius/gmd/raw/working/demo.webm)
+![Output sample](https://github.com/idealius/gmd/tree/working/demo.webm)
 
 This project allowed me to gain experience with nodejs on the Linux command line, writing code to improve execution speed, considerations about different sorting methods, and gain familiarity with some of the Linux base code.
 
