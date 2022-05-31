@@ -7,7 +7,7 @@ Whatever the original name of this project was when it started, it has been lost
 ### Goodwill Magic Didgeridoo
 (or, just "gmd")
 
-Linux Desktop Conky process resource monitoring desktop panel with cpu (%) and mem totals (in MB.) It can use Node.js. Defaults to an awk shell version for speed. Currently, to install this one needs to be familiar with Conky and Linux shell at a minimum.
+Linux Desktop Conky process resource monitoring desktop panel with cpu (%) and mem totals (in MB.) It can use Node.js as an interface to ps or top, or using awk it can interface to below (very similar to atop located here: https://github.com/facebookincubator/below it was designed by Meta OpenSource, a Facebook open source group giving back to the community: https://opensource.fb.com)  Defaults to an awk shell version using 'below' for speed. Currently, to install this one needs to be familiar with Conky and Linux shell at a minimum.
 
 A cropped version of it running on the Desktop looks like this:
 
