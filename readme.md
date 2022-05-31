@@ -27,4 +27,4 @@ It also was made to have:
 Would be nice to have features:
 
 1. Installation and usage documentation
-2. Used it's own totals instead of Conky's
+2. Had an option to use it's own totals instead of Conky's
