@@ -1,5 +1,45 @@
+Appears atop -b switch behavior is to begin at the minute, ignore the seconds, and if -e isn't given just go to the end
+
+Edit the file /usr/share/atop/atop.daily
+INTERVAl=5
+LOGPATH="/var/tmp/atop.red"
+Restart the atop service systemctl restart atop.service
+
+in /usr/share/atop
+backup atop.daily
+replace it with:
+#!/bin/bash
+exec atop -w /var/tmp/atop.red 5
+save it
+sudo systemctl restart atop
+
 atop -w /var/tmp/atop.raw 5 60 #REQUIRED format is: "every 5 seconds for a total of 60"
 myvar=$(date +"%T"); atop -w /var/tmp/atop.raw 5 60
+
+#Basically we can "time atop" to figure out the pattern before we convert it, and it looks like this: total_time = $interval_in_secs * $times - $interval_in_secs ))
+
+interval_in_secs=5
+total_time=60
+times=$(calc \($total_time+$interval_in_secs\)/$interval_in_secs)
+echo $interval_in_secs, $times
+time sh -c "atop -w /var/tmp/atop.raw $interval_in_secs $times"
+
+
+
+
+intervalsec=5
+totaltime=12 #will be in mins if interval is > 60 lets say, and in seconds if < 60 
+my_i=$(calc $totaltimemins/$interval)
+my_t=$(calc $totaltimemins*$interval) #spaces bad for calc
+echo $my_i, $my_t
+time sh -c "atop -w /var/tmp/atop.raw $my_i $my_t"
+
+
+
+myintervalsecs=5
+mytotalmins=5
+(( myrepeats= 60 / $myintervalsecs*$mytotalmins )) 
+atop -w /var/tmp/atop.raw $myintervalsecs $myrepeats
 
 atop -PPRG -r /var/tmp/atop.raw #REQUIRED there are other -P combinations in the man... The ones that start with "For every process one line is shown." seem the most promising.
 

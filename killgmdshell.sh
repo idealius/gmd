@@ -11,3 +11,6 @@ pkill -f gmd_shell_eval.sh
 pkill -f consolidate.sh
 pkill -f gmd_shell_eval.sh
 pkill -f gmd_shell_consolidate.sh
+pkill -f gmd_process_panel_shell_atop_eval
+pkill -f gmd_shell_atop_eval.sh
+pkill -f atop

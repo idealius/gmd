@@ -51,8 +51,11 @@ color3 grey
 #     }
 #     my_str += '\n'
 # }
-
+#nohup your_app &
+#7200 is two hours
 TEXT
-${execi 5 sh -c '~/.conky/gmd/./gmd_shell_atop_eval.sh'}\
-${execpi 5 cat ~/.conky/gmd/.redeval}
+${execi 7200 "rm -f /var/tmp/atop.red"}\
+${execi 7200 "sudo systemctl restart atop"}\
+${execi 5 sh -c "~/.conky/gmd/gmd_shell_atop_eval.sh"}\
 ${image ~/.config/conky/Saiph/res/bw_dark.png -p -10,-10 -s 800x800}\
+${execpi 5 cat ~/.conky/gmd/.redeval}

@@ -13,7 +13,7 @@
         MAXLINES --
     }
 
-    NR > 0 { #Our classic awk loop is used to figure out which names are duplicates this number is skipping the column headers
+    { #Our classic awk loop is used to figure out which names are duplicates this number is skipping the column headers
         seen_one[$1] += $2; #numeric sum, notice the $3, so this is more like array[fv] = fv instead of array[i] = fv
         dupe[$1] ++     #duplicate process count per process
     } 
@@ -22,7 +22,7 @@
         row = 0
         # for (k=1; k<=NF; k++) print column[k] #field/column labels
         for (f in seen_one) {
-            col_one[row] = sprintf("%3.1f", seen_one[f]) #sprintf for the decimal precision
+            col_one[row] = seen_one[f] #sprintf("%3.1f", seen_one[f]) #sprintf for the decimal precision
          
             if (dupe[f] < 2) {
                 col_name[row] = f
@@ -61,6 +61,7 @@
 
     # qsort- sort A[left .. right] by quicksort
     # Taken from The AWK Programming Language 1988
+    # Modified with B argument so we can sort both columns at once (name, data)
 
     function qsort(A,left,right,B,   i,last) {        
         if (left >= right) # do nothing if array contains

@@ -8,12 +8,12 @@
 # Notes: may want to switch sorting algo so we can bail out early during the sort.
  awk '
     BEGIN { #header
-        column[1] = "RAM Memory"
+        column[1] = "RAM"
         MAXLINES = 5
         MAXLINES --
     }
 
-    NR > 0 { #Our classic awk loop is used to figure out which names are duplicates this number is skipping the column headers
+    { #Our classic awk loop is used to figure out which names are duplicates this number is skipping the column headers
         seen_one[$1] += $2; #numeric sum, notice the $3, so this is more like array[fv] = fv instead of array[i] = fv
         dupe[$1] ++     #duplicate process count per process
     } 
@@ -61,6 +61,7 @@
 
     # qsort- sort A[left .. right] by quicksort
     # Taken from The AWK Programming Language 1988
+    # Modified with B argument so we can sort both columns at once (name, data)
 
     function qsort(A,left,right,B,   i,last) {        
         if (left >= right) # do nothing if array contains
