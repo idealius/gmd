@@ -19,7 +19,7 @@ This project allowed me to gain experience with nodejs on the Linux command line
 
 I also wrote it because I have 2008 iMac I wanted to repurpose running LinuxMint, resource monitoring is very useful for making sure it is running smoothly.
 
-But, when I looked, I found there was a gap in the Linux Desktop process-monitoring-widget space which groups or "collapses" same name processes for popular apps that make extensive use of separate processes like Microsoft's VSCode.
+But, when I looked, I found there was a gap in the Linux Desktop process-monitoring-widget space which groups or "collapses" same name processes. This wasn't much of an issue 10 or 20 years ago, but now it is with Chrome and VSCode regularly making new processes for extenstions, tabs, etc.
 
 It also was made to have:
 
