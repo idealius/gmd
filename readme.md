@@ -12,6 +12,7 @@ Linux Desktop Conky(https://github.com/brndnmtthws/conky) process resource monit
 A cropped version of it running on the Desktop looks like this:
 
 ![Output sample](https://github.com/idealius/gmd/raw/main/demo2.webp)
+
 *Notice the :(x) after the process name indicating x number of processes and their total in the following column*
 
 This project allowed me to gain experience with nodejs on the Linux command line, writing code to improve execution speed, considerations about different sorting methods, and gain familiarity with some of the Linux base code.
